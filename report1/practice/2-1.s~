@@ -1,0 +1,11 @@
+        .text
+        .align 2
+main:
+        li      $a0,66
+putc:
+        lw      $t0,0xffff0008
+        li      $t1,1
+        and     $t0,$t0,$t1
+        beqz    $t0,putc
+        sw      $a0,0xffff000c
+        j       $ra
