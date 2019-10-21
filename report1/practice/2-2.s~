@@ -1,0 +1,16 @@
+        .data
+        .align 2
+msg:
+        .byte   72,101,108,108,111,2
+        
+        .text
+        .align 2
+main:
+        li      $a0,msg
+putc:
+        lw      $t0,0xffff0008
+        li      $t1,1
+        and     $t0,$t0,$t1
+        beqz    $t0,putc
+        sw      $a0,0xffff000c
+        j       $ra
