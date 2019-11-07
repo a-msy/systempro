@@ -74,9 +74,85 @@
 \end{verbatim}
 \item[課題1-4]素数を最初から100番目まで求めて表示するMIPSのアセンブリ言語プログラムを作成してテストせよ． その際，素数を求めるために下記の2つのルーチンを作成すること．
 
+  \begin{table}[h]
+    \begin{tabular}{|l|l|}
+      \hline
+      \multicolumn{1}{|c|}{関数名} & \multicolumn{1}{c|}{概要} \\ \hline
+      test\_prime(n)            & nが素数なら1，そうでなければ0を返す     \\ \hline
+      main()                    & 整数を順々に素数判定し，100個プリント    \\ \hline
+    \end{tabular}
+  \end{table}
+C言語で記述したプログラム例: 
+\begin{verbatim}
+ 1: int test_prime(int n)
+ 2: {
+ 3:   int i;
+ 4:   for (i = 2; i < n; i++){
+ 5:     if (n % i == 0)
+ 6:       return 0;
+ 7:   }
+ 8:   return 1;
+ 9: }
+10: 
+11: int main()
+12: {
+13:   int match = 0, n = 2;
+14:   while (match < 100){
+15:     if (test_prime(n) == 1){
+16:       print_int(n);
+17:       print_string(" ");
+18:       match++;
+19:     }
+20:     n++;
+21:   }
+22:   print_string("\n");
+23: }
+\end{verbatim}
+実行結果（行を適当に折り返している）：
+\begin{verbatim}
+  2   3   5   7  11  13  17  19  23  29
+ 31  37  41  43  47  53  59  61  67  71
+ 73  79  83  89  97 101 103 107 109 113
+127 131 137 139 149 151 157 163 167 173
+179 181 191 193 197 199 211 223 227 229
+233 239 241 251 257 263 269 271 277 281
+283 293 307 311 313 317 331 337 347 349
+353 359 367 373 379 383 389 397 401 409
+419 421 431 433 439 443 449 457 461 463
+467 479 487 491 499 503 509 521 523 541
+\end{verbatim}
+
+\item[課題1-5]素数を最初から100番目まで求めて表示するMIPSのアセンブリ言語プログラムを作成してテストせよ． ただし，配列に実行結果を保存するように main 部分を改造し， ユーザの入力によって任意の番目の配列要素を表示可能にせよ． 
+
+C言語で記述したプログラム例：
+\begin{verbatim}
+ 1: int primes[100];
+ 2: int main()
+ 3: {
+ 4:   int match = 0, n = 2;
+ 5:   while (match < 100){
+ 6:     if (test_prime(n) == 1){
+ 7:       primes[match++] = n;
+ 8:     }
+ 9:     n++;
+10:   }
+11:   for (;;){
+12:     print_string("> ");
+13:     print_int(primes[read_int() - 1]);
+14:     print_string("\n");
+15:   }
+16: }
+\end{verbatim}
+実行例：
+\begin{verbatim}
+> 15
+47
+> 100
+541
+\end{verbatim}
 \end{description}
 
-\section{課題}
+\section{課題レポート}
  \subsection{課題１ー１}
   \subsubsection{考察}
 
