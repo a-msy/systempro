@@ -1,0 +1,160 @@
+%概要、課題について（課題ごとにサブセクション、課題内容コピペ）、
+
+\documentclass[a4j,11pt]{jarticle}
+\usepackage[top=25truemm,  bottom=30truemm,
+            left=25truemm, right=25truemm]{geometry}
+\title{システムプログラミング１ \\
+       レポート}
+
+% ToDo: 自分自身の氏名と学生番号に書き換える
+\author{氏名: 今田　将也 (IMADA, Masaya) \\
+        学生番号: 09430509}
+
+% ToDo: 教員の指示に従って適切に書き換える
+\date{出題日: 2019年xx月xx日 \\
+      提出日: 20xx年xx月xx日 \\
+      締切日: 20xx年xx月xx日 \\}  % 注：最後の\\は不要に見えるが必要．
+
+\begin{document}
+\maketitle
+
+% 目次つきの表紙ページにする場合はコメントを外す
+%{\footnotesize \tableofcontents \newpage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{概要} \label{chap:abstract}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+本演習では，プログラミングに関する理解を深めるために不可欠なアセンブラとC言語の境界部分についての演習を行った．具体的には，SPIMというMIPS　CPUシミュレータのハードウェア上にC言語とアセンブリ言語を仕様して文字の表示と入力のためのシステムコールライブラリを作成した．さらに，そのライブラリを使用して printf 及び gets 相当を C言語で作成する． 最後に，それらを利用した応用プログラムを動作させた．
+
+なお、与えられた課題内容を以下に述べる．
+
+\subsection{課題内容}\label{kadai}
+以下の課題についてレポートをする． プログラムは，MIPSアセンブリ言語で記述し，SPIMを用いて動作を確認している．
+\begin{description}
+\item[課題1-1] 教科書A.8節 「入力と出力」に示されている方法と， A.9節 最後「システムコール」に示されている方法のそれぞれで "Hello World" を表示せよ．両者の方式を比較し考察せよ．
+\item[課題1-2]アセンブリ言語中で使用する .data， .text および .align とは何か解説せよ． 下記コード中の 6行目の .data がない場合，どうなるかについて考察せよ．
+\begin{verbatim}
+ 1:         .text
+ 2:         .align  2
+ 3: _print_message:
+ 4:         la      $a0, msg
+ 5:         li      $v0, 4
+ 6:         .data
+ 7:         .align  2
+ 8: msg:
+ 9:         .asciiz "Hello!!\n"
+10:         .text
+11:         syscall
+12:         j       $ra
+13: main:
+14:         subu    $sp, $sp, 24
+15:         sw      $ra, 16($sp)
+16:         jal     _print_message
+17:         lw      $ra, 16($sp)
+18:         addu    $sp, $sp, 24
+19:         j       $ra
+\end{verbatim}
+\item[課題1-3]教科書A.6節 「手続き呼出し規約」に従って，関数 fact を実装せよ． (以降の課題においては，この規約に全て従うこと) fact をC言語で記述した場合は，以下のようになるであろう． 
+\begin{verbatim}
+ 1: main()
+ 2: {
+ 3:   print_string("The factorial of 10 is ");
+ 4:   print_int(fact(10));
+ 5:   print_string("\n");
+ 6: }
+ 7: 
+ 8: int fact(int n)
+ 9: {
+10:   if (n < 1)
+11:     return 1;
+12:   else
+13:     return n * fact(n - 1);
+14: }
+\end{verbatim}
+\item[課題1-4]素数を最初から100番目まで求めて表示するMIPSのアセンブリ言語プログラムを作成してテストせよ． その際，素数を求めるために下記の2つのルーチンを作成すること．
+
+  \begin{table}[h]
+    \begin{tabular}{|l|l|}
+      \hline
+      \multicolumn{1}{|c|}{関数名} & \multicolumn{1}{c|}{概要} \\ \hline
+      test\_prime(n)            & nが素数なら1，そうでなければ0を返す     \\ \hline
+      main()                    & 整数を順々に素数判定し，100個プリント    \\ \hline
+    \end{tabular}
+  \end{table}
+C言語で記述したプログラム例: 
+\begin{verbatim}
+ 1: int test_prime(int n)
+ 2: {
+ 3:   int i;
+ 4:   for (i = 2; i < n; i++){
+ 5:     if (n % i == 0)
+ 6:       return 0;
+ 7:   }
+ 8:   return 1;
+ 9: }
+10: 
+11: int main()
+12: {
+13:   int match = 0, n = 2;
+14:   while (match < 100){
+15:     if (test_prime(n) == 1){
+16:       print_int(n);
+17:       print_string(" ");
+18:       match++;
+19:     }
+20:     n++;
+21:   }
+22:   print_string("\n");
+23: }
+\end{verbatim}
+実行結果（行を適当に折り返している）：
+\begin{verbatim}
+  2   3   5   7  11  13  17  19  23  29
+ 31  37  41  43  47  53  59  61  67  71
+ 73  79  83  89  97 101 103 107 109 113
+127 131 137 139 149 151 157 163 167 173
+179 181 191 193 197 199 211 223 227 229
+233 239 241 251 257 263 269 271 277 281
+283 293 307 311 313 317 331 337 347 349
+353 359 367 373 379 383 389 397 401 409
+419 421 431 433 439 443 449 457 461 463
+467 479 487 491 499 503 509 521 523 541
+\end{verbatim}
+
+\item[課題1-5]素数を最初から100番目まで求めて表示するMIPSのアセンブリ言語プログラムを作成してテストせよ． ただし，配列に実行結果を保存するように main 部分を改造し， ユーザの入力によって任意の番目の配列要素を表示可能にせよ． 
+
+C言語で記述したプログラム例：
+\begin{verbatim}
+ 1: int primes[100];
+ 2: int main()
+ 3: {
+ 4:   int match = 0, n = 2;
+ 5:   while (match < 100){
+ 6:     if (test_prime(n) == 1){
+ 7:       primes[match++] = n;
+ 8:     }
+ 9:     n++;
+10:   }
+11:   for (;;){
+12:     print_string("> ");
+13:     print_int(primes[read_int() - 1]);
+14:     print_string("\n");
+15:   }
+16: }
+\end{verbatim}
+実行例：
+\begin{verbatim}
+> 15
+47
+> 100
+541
+\end{verbatim}
+\end{description}
+
+\section{課題レポート}
+ \subsection{課題１ー１}
+  \subsubsection{考察}
+
+\section{感想}
+\end{document}

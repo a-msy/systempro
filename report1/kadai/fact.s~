@@ -1,0 +1,60 @@
+        .data
+        .align 2
+str:
+        .ascii "The factorial of 10 is /n"
+
+        .text
+        .align 2
+
+print:  syscall
+        j       $ra
+        
+main:
+        subu    $sp,$sp,32  #スタックフレームは３２バイト長で確保をする
+        sw      $ra,20($sp) #戻りアドレスを退避させる
+        sw      $fp,16($sp) #古いフレームポインタを退避
+        addiu   $fp,$sp,28  #新しくフレームポインタを設定
+
+        #factを呼び出して戻ってから、syscallで$LCとfactの返り値をプリントする
+
+        li      $a0,10      #引数は10
+        jal     fact
+
+        la      $a0,str     #a0にテンプレ文のアドレスを記入
+        move    $a1,$v0     #factの返り値$a1に収める
+        li      $v0,4
+        jal     print
+        la      $a0,$a1
+        jal     print
+
+        #退避してあったレジスタを復元したあと呼出側へ戻る
+
+        lw      $ra,20($sp) #戻りアドレスを復元
+        lw      $fp,16($sp) #フレームポインタを復元
+        addiu   $sp,$sp,32  #スタックポインタをポップする
+        j       $ra
+
+fact:
+        subu    $sp,$sp,32  #スタックフレームは３２バイト長
+        sw      $ra,20($sp) #戻りアドレスを退避させる
+        sw      $fp,16($sp) #古いフレームポインタを退避
+        addiu   $fp,$sp,28  #新しくフレームポインタを設定
+        sw      $a0,0($fp)  #引数を退避させる# 28($sp)にもってきているもの
+
+        #引数＞０かどうかを調べる。
+        #引数＜＝０なら１を返す。
+        #引数＞０ならfactルーチンを呼出(n-1)を計算し、その結果にnをかける
+        #上記を再帰的に繰り返す
+
+        lw      $v0,24($sp) #nを退避させておく
+        bgtz    $v0,factsub #引数が0より大きければ再帰処理に飛ぶ
+        li      $v0,1       #0以下なら１
+        #return処理
+        lw      $ra,20($sp) #戻りアドレスを復元
+        lw      $fp,16($sp) #フレームポインタを復元
+        addiu   $sp,$sp,32  #スタックポインタをポップする
+        j       $ra
+
+factsub:
+        lw      $v1,0($sp)  #n
+        subu    $v0,$v1,1

@@ -24,7 +24,7 @@ msg:
 #       .byte 'H', 'e', 'l', 'l', 'o', 0
 #       .byte 72, 101, 108, 108, 111, 0
 #       .ascii "Hello\000"
-        .asciiz "CRAZY"
+        .asciiz "Hello"
 
         .text
         .align 2
