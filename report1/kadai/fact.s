@@ -27,11 +27,12 @@ main:
         li      $a0,10      #引数は10
         jal     fact
 
-        #move    $t1,$v0     #返り値をa1に退避
-        #la      $a0,str     #a0にテンプレ文のアドレスを記入
-        #jal     print_str
+        move    $t1,$v0     #返り値をt1に退避
         
-        move    $a0,$v0     #factの返り値を保存したt1を$a0に収める
+        la      $a0,str     #a0にテンプレ文のアドレスを記入
+        jal     print_str
+        
+        move    $a0,$t1     #factの返り値を保存したt1を$a0に収める
         jal     print_int
 
         #退避してあったレジスタを復元したあと呼出側へ戻る
