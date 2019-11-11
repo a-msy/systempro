@@ -53,6 +53,7 @@ while:
         jal     test_prime
         
         bne     $v0,$s3,else    # $v0 != 1
+        
         move    $a0,$s2        # put the prime number
         li      $v0,1
         syscall
