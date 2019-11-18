@@ -1,4 +1,4 @@
-This is e-pTeX, Version 3.14159265-p3.8.1-180226-2.6 (utf8.euc) (TeX Live 2018) (preloaded format=platex 2019.2.22)  18 NOV 2019 16:58
+This is e-pTeX, Version 3.14159265-p3.8.1-180226-2.6 (utf8.euc) (TeX Live 2018) (preloaded format=platex 2019.2.22)  18 NOV 2019 17:15
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -206,10 +206,10 @@ File: sosu2.s  (verbatim)
 Here is how much of TeX's memory you used:
  2297 strings out of 494703
  31795 string characters out of 6180181
- 110374 words of memory out of 5000000
+ 109374 words of memory out of 5000000
  6178 multiletter control sequences out of 15000+600000
  15809 words of font info for 62 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  26i,8n,32p,645b,389s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on report.dvi (14 pages, 26460 bytes).
+Output written on report.dvi (14 pages, 27224 bytes).
