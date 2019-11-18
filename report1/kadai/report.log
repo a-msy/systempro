@@ -1,4 +1,4 @@
-This is e-pTeX, Version 3.14159265-p3.8.1-180226-2.6 (utf8.euc) (TeX Live 2018) (preloaded format=platex 2019.2.22)  11 NOV 2019 14:24
+This is e-pTeX, Version 3.14159265-p3.8.1-180226-2.6 (utf8.euc) (TeX Live 2018) (preloaded format=platex 2019.2.22)  18 NOV 2019 16:58
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -196,15 +196,20 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 File: k1-2.s  (verbatim)
  [4] [5]
 File: k1.s  (verbatim)
+ [6]
 File: fact.s  (verbatim)
- [6] [7] [8] (./report.aux) ) 
+ [7] [8]
+File: sosu1.s  (verbatim)
+ [9] [10]
+File: sosu2.s  (verbatim)
+ [11] [12] [13] [14] (./report.aux) ) 
 Here is how much of TeX's memory you used:
- 2293 strings out of 494703
- 31761 string characters out of 6180181
- 107374 words of memory out of 5000000
- 6176 multiletter control sequences out of 15000+600000
+ 2297 strings out of 494703
+ 31795 string characters out of 6180181
+ 110374 words of memory out of 5000000
+ 6178 multiletter control sequences out of 15000+600000
  15809 words of font info for 62 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 26i,8n,32p,403b,389s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 26i,8n,32p,645b,389s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on report.dvi (8 pages, 13752 bytes).
+Output written on report.dvi (14 pages, 26460 bytes).
