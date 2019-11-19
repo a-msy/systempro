@@ -1,16 +1,15 @@
-This is e-pTeX, Version 3.14159265-p3.8.1-180226-2.6 (utf8.euc) (TeX Live 2018) (preloaded format=platex 2019.2.22)  18 NOV 2019 17:15
+This is e-pTeX, Version 3.14159265-p3.8.2-190131-2.6 (utf8.sjis) (TeX Live 2019/W32TeX) (preloaded format=platex 2019.6.4)  19 NOV 2019 14:01
 entering extended mode
- \write18 enabled.
- file:line:error style messages enabled.
+ restricted \write18 enabled.
  %&-line parsing enabled.
-**report.tex
-(./report.tex
-pLaTeX2e <2018-12-01> (based on LaTeX2e <2018-12-01>)
-(/opt/edu/texlive/2018/texmf-dist/tex/platex/base/jarticle.cls
-Document Class: jarticle 2018/10/25 v1.8a Standard pLaTeX class
+**"c:/Users/muram/OneDrive - 岡山大学/2年次/3学期/systempro/report1/kadai/report"
+(c:/Users/muram/OneDrive - 岡山大学/2年次/3学期/systempro/report1/kadai/report.tex
+pLaTeX2e <2019-04-06> (based on LaTeX2e <2018-12-01>)
+(c:/w32tex/share/texmf-dist/tex/platex/base/jarticle.cls
+Document Class: jarticle 2019/04/02 v1.8b Standard pLaTeX class
 \c@@paper=\count83
-(/opt/edu/texlive/2018/texmf-dist/tex/platex/base/jsize11.clo
-File: jsize11.clo 2018/10/25 v1.8a Standard pLaTeX file (size option)
+(c:/w32tex/share/texmf-dist/tex/platex/base/jsize11.clo
+File: jsize11.clo 2019/04/02 v1.8b Standard pLaTeX file (size option)
 )
 \c@part=\count84
 \c@section=\count85
@@ -29,22 +28,17 @@ LaTeX Font Info:    Overwriting symbol font `mincho' in version `bold'
 \@lnumwidth=\dimen119
 \bibindent=\dimen120
 \heisei=\count92
-)
-(/opt/edu/texlive/2018/texmf-dist/tex/latex/geometry/geometry.sty
+) (c:/w32tex/share/texmf-dist/tex/latex/geometry/geometry.sty
 Package: geometry 2018/04/16 v5.8 Page Geometry
-
-(/opt/edu/texlive/2018/texmf-dist/tex/latex/graphics/keyval.sty
+ (c:/w32tex/share/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks15
-)
-(/opt/edu/texlive/2018/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+) (c:/w32tex/share/texmf-dist/tex/generic/oberdiek/ifpdf.sty
 Package: ifpdf 2018/09/07 v3.3 Provides the ifpdf switch
-)
-(/opt/edu/texlive/2018/texmf-dist/tex/generic/oberdiek/ifvtex.sty
+) (c:/w32tex/share/texmf-dist/tex/generic/oberdiek/ifvtex.sty
 Package: ifvtex 2016/05/16 v1.6 Detect VTeX and its facilities (HO)
 Package ifvtex Info: VTeX not detected.
-)
-(/opt/edu/texlive/2018/texmf-dist/tex/generic/ifxetex/ifxetex.sty
+) (c:/w32tex/share/texmf-dist/tex/generic/ifxetex/ifxetex.sty
 Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 )
 \Gm@cnth=\count93
@@ -59,11 +53,9 @@ Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 \Gm@layouthoffset=\dimen127
 \Gm@layoutvoffset=\dimen128
 \Gm@dimlist=\toks16
-)
-(/opt/edu/texlive/2018/texmf-dist/tex/latex/ascmac/ascmac.sty
+ (c:/w32tex/share/texmf-dist/tex/latex/geometry/geometry.cfg)) (c:/w32tex/share/texmf-dist/tex/latex/ascmac/ascmac.sty
 Package: ascmac 2018/03/09 v2.0h ascmac wrapper (community edition) 
-
-(/opt/edu/texlive/2018/texmf-dist/tex/latex/ascmac/tascmac.sty
+ (c:/w32tex/share/texmf-dist/tex/latex/ascmac/tascmac.sty
 Package: tascmac 2018/03/09 v2.0h ascmac package (community edition) 
 \@savetbaselineshift=\dimen129
 \@saveybaselineshift=\dimen130
@@ -82,14 +74,12 @@ Package: tascmac 2018/03/09 v2.0h ascmac package (community edition)
 \@@bwsp=\box51
 \@bcal=\count96
 \shaderule=\dimen134
-))
-(/opt/edu/texlive/2018/texmf-dist/tex/latex/tools/verbatim.sty
+)) (c:/w32tex/share/texmf-dist/tex/latex/tools/verbatim.sty
 Package: verbatim 2014/10/28 v1.5q LaTeX2e package for verbatim enhancements
 \every@verbatim=\toks18
 \verbatim@line=\toks19
 \verbatim@in@stream=\read1
-)
-(/opt/edu/texlive/2018/texmf-dist/tex/latex/listings/listings.sty
+) (c:/w32tex/share/texmf-dist/tex/latex/listings/listings.sty
 \lst@mode=\count97
 \lst@gtempboxa=\box52
 \lst@token=\toks20
@@ -102,19 +92,16 @@ Package: verbatim 2014/10/28 v1.5q LaTeX2e package for verbatim enhancements
 \lst@newlines=\count101
 \lst@lineno=\count102
 \lst@maxwidth=\dimen138
-
-(/opt/edu/texlive/2018/texmf-dist/tex/latex/listings/lstmisc.sty
-File: lstmisc.sty 2018/09/02 1.7 (Carsten Heinz)
+ (c:/w32tex/share/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2019/02/27 1.8b (Carsten Heinz)
 \c@lstnumber=\count103
 \lst@skipnumbers=\count104
 \lst@framebox=\box53
-)
-(/opt/edu/texlive/2018/texmf-dist/tex/latex/listings/listings.cfg
-File: listings.cfg 2018/09/02 1.7 listings configuration
+) (c:/w32tex/share/texmf-dist/tex/latex/listings/listings.cfg
+File: listings.cfg 2019/02/27 1.8b listings configuration
 ))
-Package: listings 2018/09/02 1.7 (Carsten Heinz)
-
-(./report.aux)
+Package: listings 2019/02/27 1.8b (Carsten Heinz)
+ (./report.aux)
 \openout1 = `report.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 39.
@@ -204,12 +191,12 @@ File: sosu1.s  (verbatim)
 File: sosu2.s  (verbatim)
  [11] [12] [13] [14] (./report.aux) ) 
 Here is how much of TeX's memory you used:
- 2297 strings out of 494703
- 31795 string characters out of 6180181
- 109374 words of memory out of 5000000
- 6178 multiletter control sequences out of 15000+600000
+ 2303 strings out of 493216
+ 32000 string characters out of 6145931
+ 114441 words of memory out of 5000000
+ 6316 multiletter control sequences out of 15000+600000
  15809 words of font info for 62 fonts, out of 8000000 for 9000
- 14 hyphenation exceptions out of 8191
- 26i,8n,32p,645b,389s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 929 hyphenation exceptions out of 8191
+ 26i,8n,32p,741b,389s stack positions out of 5000i,500n,10000p,500000b,80000s
 
-Output written on report.dvi (14 pages, 27224 bytes).
+Output written on report.dvi (14 pages, 27268 bytes).
