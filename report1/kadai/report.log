@@ -1,14 +1,14 @@
-This is e-pTeX, Version 3.14159265-p3.8.2-190131-2.6 (utf8.sjis) (TeX Live 2019/W32TeX) (preloaded format=platex 2019.6.4)  19 NOV 2019 14:03
+This is e-pTeX, Version 3.14159265-p3.8.2-190709-2.6 (utf8.sjis) (TeX Live 2019/W32TeX) (preloaded format=platex 2019.7.20)  20 NOV 2019 00:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**"c:/Users/muram/OneDrive - 岡山大学/2年次/3学期/systempro/report1/kadai/report"
-(c:/Users/muram/OneDrive - 岡山大学/2年次/3学期/systempro/report1/kadai/report.tex
+**"d:/OneDrive - 岡山大学/2年次/3学期/systempro/report1/kadai/report"
+(d:/OneDrive - 岡山大学/2年次/3学期/systempro/report1/kadai/report.tex
 pLaTeX2e <2019-04-06> (based on LaTeX2e <2018-12-01>)
-(c:/w32tex/share/texmf-dist/tex/platex/base/jarticle.cls
+(d:/app/w32tex/share/texmf-dist/tex/platex/base/jarticle.cls
 Document Class: jarticle 2019/04/02 v1.8b Standard pLaTeX class
 \c@@paper=\count83
-(c:/w32tex/share/texmf-dist/tex/platex/base/jsize11.clo
+(d:/app/w32tex/share/texmf-dist/tex/platex/base/jsize11.clo
 File: jsize11.clo 2019/04/02 v1.8b Standard pLaTeX file (size option)
 )
 \c@part=\count84
@@ -28,17 +28,17 @@ LaTeX Font Info:    Overwriting symbol font `mincho' in version `bold'
 \@lnumwidth=\dimen119
 \bibindent=\dimen120
 \heisei=\count92
-) (c:/w32tex/share/texmf-dist/tex/latex/geometry/geometry.sty
+) (d:/app/w32tex/share/texmf-dist/tex/latex/geometry/geometry.sty
 Package: geometry 2018/04/16 v5.8 Page Geometry
- (c:/w32tex/share/texmf-dist/tex/latex/graphics/keyval.sty
+ (d:/app/w32tex/share/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks15
-) (c:/w32tex/share/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+) (d:/app/w32tex/share/texmf-dist/tex/generic/oberdiek/ifpdf.sty
 Package: ifpdf 2018/09/07 v3.3 Provides the ifpdf switch
-) (c:/w32tex/share/texmf-dist/tex/generic/oberdiek/ifvtex.sty
+) (d:/app/w32tex/share/texmf-dist/tex/generic/oberdiek/ifvtex.sty
 Package: ifvtex 2016/05/16 v1.6 Detect VTeX and its facilities (HO)
 Package ifvtex Info: VTeX not detected.
-) (c:/w32tex/share/texmf-dist/tex/generic/ifxetex/ifxetex.sty
+) (d:/app/w32tex/share/texmf-dist/tex/generic/ifxetex/ifxetex.sty
 Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 )
 \Gm@cnth=\count93
@@ -53,9 +53,9 @@ Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 \Gm@layouthoffset=\dimen127
 \Gm@layoutvoffset=\dimen128
 \Gm@dimlist=\toks16
- (c:/w32tex/share/texmf-dist/tex/latex/geometry/geometry.cfg)) (c:/w32tex/share/texmf-dist/tex/latex/ascmac/ascmac.sty
+ (d:/app/w32tex/share/texmf-dist/tex/latex/geometry/geometry.cfg)) (d:/app/w32tex/share/texmf-dist/tex/latex/ascmac/ascmac.sty
 Package: ascmac 2018/03/09 v2.0h ascmac wrapper (community edition) 
- (c:/w32tex/share/texmf-dist/tex/latex/ascmac/tascmac.sty
+ (d:/app/w32tex/share/texmf-dist/tex/latex/ascmac/tascmac.sty
 Package: tascmac 2018/03/09 v2.0h ascmac package (community edition) 
 \@savetbaselineshift=\dimen129
 \@saveybaselineshift=\dimen130
@@ -74,12 +74,12 @@ Package: tascmac 2018/03/09 v2.0h ascmac package (community edition)
 \@@bwsp=\box51
 \@bcal=\count96
 \shaderule=\dimen134
-)) (c:/w32tex/share/texmf-dist/tex/latex/tools/verbatim.sty
+)) (d:/app/w32tex/share/texmf-dist/tex/latex/tools/verbatim.sty
 Package: verbatim 2014/10/28 v1.5q LaTeX2e package for verbatim enhancements
 \every@verbatim=\toks18
 \verbatim@line=\toks19
 \verbatim@in@stream=\read1
-) (c:/w32tex/share/texmf-dist/tex/latex/listings/listings.sty
+) (d:/app/w32tex/share/texmf-dist/tex/latex/listings/listings.sty
 \lst@mode=\count97
 \lst@gtempboxa=\box52
 \lst@token=\toks20
@@ -92,16 +92,20 @@ Package: verbatim 2014/10/28 v1.5q LaTeX2e package for verbatim enhancements
 \lst@newlines=\count101
 \lst@lineno=\count102
 \lst@maxwidth=\dimen138
- (c:/w32tex/share/texmf-dist/tex/latex/listings/lstmisc.sty
+ (d:/app/w32tex/share/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2019/02/27 1.8b (Carsten Heinz)
 \c@lstnumber=\count103
 \lst@skipnumbers=\count104
 \lst@framebox=\box53
-) (c:/w32tex/share/texmf-dist/tex/latex/listings/listings.cfg
+) (d:/app/w32tex/share/texmf-dist/tex/latex/listings/listings.cfg
 File: listings.cfg 2019/02/27 1.8b listings configuration
 ))
 Package: listings 2019/02/27 1.8b (Carsten Heinz)
- (./report.aux)
+ (d:/app/w32tex/share/texmf-dist/tex/latex/jlisting/jlisting.sty
+Package: jlisting 2006/02/20 0.2 (Thor)
+\lst@nextchar=\count105
+\lst@inputfile=\read2
+) (./report.aux)
 \openout1 = `report.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 39.
@@ -155,7 +159,7 @@ LaTeX Font Info:    ... okay on input line 39.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-\c@lstlisting=\count105
+\c@lstlisting=\count106
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <12> on input line 40.
 LaTeX Font Info:    External font `cmex10' loaded for size
@@ -179,24 +183,31 @@ LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <10.95> not available
 ]
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <10.95> on input line 99.
- [2] [3]
-File: k1-2.s  (verbatim)
- [4] [5]
-File: k1.s  (verbatim)
- [6]
-File: fact.s  (verbatim)
- [7] [8]
-File: sosu1.s  (verbatim)
- [9] [10]
-File: sosu2.s  (verbatim)
- [11] [12] [13] [14] (./report.aux) ) 
+ [2] [3] [4] [5] [6] [7]
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 219.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 219.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 219.
+ (d:/app/w32tex/share/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 219.
+LaTeX Font Info:    Try loading font information for OML+cmr on input line 229.
+ (d:/app/w32tex/share/texmf-dist/tex/latex/base/omlcmr.fd
+File: omlcmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10> not available
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 229.
+ [8] [9] [10] [11] [12] (./report.aux) ) 
 Here is how much of TeX's memory you used:
- 2303 strings out of 493216
- 32000 string characters out of 6145931
- 114441 words of memory out of 5000000
- 6316 multiletter control sequences out of 15000+600000
- 15809 words of font info for 62 fonts, out of 8000000 for 9000
+ 2621 strings out of 493215
+ 35258 string characters out of 6145920
+ 329670 words of memory out of 5000000
+ 6623 multiletter control sequences out of 15000+600000
+ 15998 words of font info for 63 fonts, out of 8000000 for 9000
  929 hyphenation exceptions out of 8191
- 26i,8n,32p,714b,389s stack positions out of 5000i,500n,10000p,500000b,80000s
+ 28i,8n,32p,702b,1742s stack positions out of 5000i,500n,10000p,500000b,80000s
 
-Output written on report.dvi (14 pages, 27224 bytes).
+Output written on report.dvi (12 pages, 51040 bytes).
