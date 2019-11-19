@@ -4,7 +4,7 @@
             left=25truemm, right=25truemm]{geometry}
 \usepackage{ascmac}
 \usepackage{verbatim}
-\usepackage{listings}
+\usepackage{listings,jlisting}
 \lstset{%
   language={},
   basicstyle={\small},%
@@ -179,19 +179,16 @@ xspim -mapped_io&
 \end{verbatim}
 でコンソール上で実行後，必要なアセンブリファイルをloadし，runすることで実行した．
 \section{課題レポート}
- \subsection{課題1-1}
-  \subsubsection{作成したプログラム}
-  \begin{screen}
-    A.8節「入力と出力」に示されている方法
-  \end{screen}
-  \verbatiminput{k1-2.s}
 
-  \begin{screen}
-    A.9節「システムコール」に示されている方法
-    \end{screen}
-  \verbatiminput{k1.s}
+ \subsection{課題1-1}
+
+  \subsubsection{作成したプログラム}
+
+    \lstinputlisting[caption=A.8節「入力と出力」に示されている方法,label=program1]{k1-2.s}
+    \lstinputlisting[caption= A.9節「システムコール」に示されている方法,label=program2]{k1.s}
 
   \subsubsection{考察}
+  
   前者での文字の出力は，野蛮な方法である．計算機ごとに変り得るアドレスの0xffff000cを意識しつつ使うのは面倒であり，アドレスを知る術がない場合実装するのが不可能である．また，仮に他のプログラムも同時に印刷しようとした場合に競合が発生する可能性もある．このプログラムは印刷が可能になるまで待機してから印刷を行っているが，待たずに印刷するようなプログラムを作成した場合，機器の破壊につながることもあるだろう．
 
 それに比べて，システムコールはカーネルごとに引数の意味が異なって，そのアドレスが変化したとしてもプログラムを変更する必要がなく，他のプログラムとの競合も調整してもらえるため，安全にプログラムを走行することができる．システムコール命令を用いることで安全にユーザプログラムからカーネルやメモリ資源を保護することができ、カーネルに所望の処理を依頼することができる．
@@ -201,9 +198,15 @@ xspim -mapped_io&
   \begin{screen}
     課題のコードの実行結果
     \end{screen}
+    \begin{verbatim}
+Hello!!
+    \end{verbatim}
   \begin{screen}
-    .dataがない場合の実行結果
+    6行目の.dataをコメントアウトした場合の場合の実行結果
     \end{screen}
+    \begin{verbatim}
+X\200}B
+    \end{verbatim}
   \subsubsection{考察}
   まず，.data，.textとはメモリ中のどこにデータやテキストを配置するかを制御するためのアセンブラ指令である．本講義で使用したSPIMはテキストとデータのセグメントを分割してメモリ中に並べていくようになっている．しかし，テキストとデータは最終的にどちらも数値であるため，どちらをどこに配置するかアセンブラでは決定できず，プログラマ側で指定する必要がある．また，テキストは通常書き換わることはないのでデータと違って読み込み専用のメモリ上に配置することができる．また，異なるプロセスで同じプログラムを実行する場合でもテキストは同一なので共有することも可能になる．このように，データとテキストを意識して区別することで効率的にプロセスを実行できる．
 
@@ -213,7 +216,7 @@ xspim -mapped_io&
   プログラムは大きく分けて，mainとfact部に分かれる．main部では，まず手続き呼出規約に従ってスタックを確保した．そして課題のフローに従って，引数を設定しfactを実行後，結果をシステムコールにて印刷し各種のアドレスを復元し，スタックポインタをポップし，プログラムを終了する．fact部では，まずmain部同様に手続き呼出規約に従ってスタックを確保し，再帰的に引数を渡すことが出きるように確保した．引数が$0$より大きいなら再帰処理のfactsubにjal命令を実行，$0$以下なら$1$を返し，一つ前のfactルーチンを呼出し、その計算結果に引数をかけていくという処理を再帰的に繰り返した．factルーチン終了後は戻りアドレスを復元し，スタックポインタをポップする処理を行いルーチンを終了させている．
 
   \subsubsection{作成したプログラム}
-   \verbatiminput{fact.s}
+  \lstinputlisting[caption=10の階乗を再帰的に求めるプログラム,label=programfact]{fact.s}
   \subsubsection{実行テスト結果}
 \begin{verbatim}
 $ xspim -mapped_io&
@@ -223,12 +226,41 @@ The factorial of 10 is 3628800
  \subsection{課題1-4}
   \subsubsection{実装内容}
   \subsubsection{作成したプログラム}
-   \verbatiminput{sosu1.s}
+   \lstinputlisting[caption=素数を100個表示するプログラム,label=programsosu]{sosu1.s}
+   \subsubsection{実行テスト結果}
+   \begin{verbatim}
+$ xspim -mapped_io&
+2 3 5 7 11 13 17 19 23 29 
+31 37 41 43 47 53 59 61 67 71 
+73 79 83 89 97 101 103 107 109 113 
+127 131 137 139 149 151 157 163 167 173 
+179 181 191 193 197 199 211 223 227 229 
+233 239 241 251 257 263 269 271 277 281 
+283 293 307 311 313 317 331 337 347 349 
+353 359 367 373 379 383 389 397 401 409 
+419 421 431 433 439 443 449 457 461 463 
+467 479 487 491 499 503 509 521 523 541 
+   \end{verbatim}
 
  \subsection{課題1-5}
   \subsubsection{実装内容}
   \subsubsection{作成したプログラム}
-   \verbatiminput{sosu2.s}
+   \lstinputlisting[caption=配列で入力に応じて素数を表示するプログラム,label=programsosu2]{sosu2.s}
+   \subsubsection{実行テスト結果}
+   \begin{verbatim}
+$ xspim -mapped_io&
+To quit, type 0
+> 100
+541
+> 14
+43
+> -1000
+Please type correct number
+> 199
+Please type correct number
+> 0
+Good bye :)
+   \end{verbatim}
 
 \section{感想}
 \end{document}
