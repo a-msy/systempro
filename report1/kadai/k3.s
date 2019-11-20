@@ -62,10 +62,10 @@ printf:
         addiu   $fp, $sp, 28 # Set up frame pointer
   
         li      $v0, 4        # syscall of print_string
-        syscall             # Print format string
+        syscall               # Print format string
         li      $v0, 1        # syscal of print_int
         move    $a0, $a1      # Move $a1 to $a0 for syscall
-        syscall             # Print n
+        syscall               # Print n
 
         lw      $ra, 20($sp)  # Restore $ra
         lw      $fp, 16($sp)  # Restore $fp

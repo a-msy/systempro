@@ -1,4 +1,4 @@
-This is e-pTeX, Version 3.14159265-p3.8.2-190709-2.6 (utf8.sjis) (TeX Live 2019/W32TeX) (preloaded format=platex 2019.7.20)  20 NOV 2019 00:20
+This is e-pTeX, Version 3.14159265-p3.8.2-190709-2.6 (utf8.sjis) (TeX Live 2019/W32TeX) (preloaded format=platex 2019.7.20)  20 NOV 2019 22:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -194,20 +194,21 @@ File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 219.
-LaTeX Font Info:    Try loading font information for OML+cmr on input line 229.
+ [8]
+LaTeX Font Info:    Try loading font information for OML+cmr on input line 233.
  (d:/app/w32tex/share/texmf-dist/tex/latex/base/omlcmr.fd
 File: omlcmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 229.
- [8] [9] [10] [11] [12] (./report.aux) ) 
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 233.
+ [9] [10] [11] [12] [13] (./report.aux) ) 
 Here is how much of TeX's memory you used:
  2621 strings out of 493215
  35258 string characters out of 6145920
- 329670 words of memory out of 5000000
+ 325657 words of memory out of 5000000
  6623 multiletter control sequences out of 15000+600000
  15998 words of font info for 63 fonts, out of 8000000 for 9000
  929 hyphenation exceptions out of 8191
- 28i,8n,32p,729b,1742s stack positions out of 5000i,500n,10000p,500000b,80000s
+ 28i,8n,32p,820b,1740s stack positions out of 5000i,500n,10000p,500000b,80000s
 
-Output written on report.dvi (12 pages, 51080 bytes).
+Output written on report.dvi (13 pages, 55604 bytes).

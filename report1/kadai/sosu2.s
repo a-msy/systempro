@@ -8,15 +8,13 @@ space:
 enter:
         .asciiz "\n"
 start:      
-        .asciiz "To quit, type 0\n\n"
-        
+        .asciiz "To quit, type 0\n\n"        
 mark:
         .asciiz "\n> "
 owari:
         .asciiz "\nGood bye :)\n\n"
 excep:
         .asciiz "\nPlease type correct number\n"
-
         
         .text
         .align 2
