@@ -1,59 +1,28 @@
-# Name（リポジトリ/プロジェクト/OSSなどの名前）
+# ２年次３・４学期システムプログラミング
 
-分かりやすくてカッコイイ名前をつける（今回は"hoge"という名前をつける）
+自分用リポジトリ
 
-"hoge"が何かを簡潔に紹介する
+# 必要なもの
 
-# DEMO
-
-"hoge"の魅力が直感的に伝えわるデモ動画や図解を載せる
-
-# Features
-
-"hoge"のセールスポイントや差別化などを説明する
-
-# Requirement
-
-"hoge"を動かすのに必要なライブラリなどを列挙する
-
-* huga 3.5.2
-* hogehuga 1.0.2
-
-# Installation
-
-Requirementで列挙したライブラリなどのインストール方法を説明する
-
-```bash
-pip install huga_package
-```
+* xspimなどのMIPS CPUエミュレータ
+* latex
 
 # Usage
 
 DEMOの実行方法など、"hoge"の基本的な使い方を説明する
 
 ```bash
-git clone https://github.com/hoge/~
-cd examples
-python demo.py
+git clone git@github.com:a-msy/systempro.git
+xspim -mapped_io&
 ```
-
+kadaiっていうフォルダの中にMIPSのコードがある．
 # Note
 
-注意点などがあれば書く
+パクらない．あくまで参考に．
 
 # Author
-
-作成情報を列挙する
-
-* 作成者
-* 所属
-* E-mail
+It's me.
 
 # License
-ライセンスを明示する
 
-"hoge" is under [MIT license](https://en.wikipedia.org/wiki/MIT_License).
-
-社内向けなら社外秘であることを明示してる
-
-"hoge" is Confidential.
+This is under [MIT license](https://en.wikipedia.org/wiki/MIT_License).
