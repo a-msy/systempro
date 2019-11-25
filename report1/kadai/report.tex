@@ -3,27 +3,6 @@
             left=25truemm, right=25truemm]{geometry}
 \usepackage{ascmac}
 \usepackage{verbatim}
-\usepackage{listings,jlisting}
-\lstset{%
-  language={},
-  basicstyle={\small},%
-  identifierstyle={},%
-  commentstyle={\itshape},%
-  keywordstyle={\bfseries},%
-  ndkeywordstyle={},%
-  stringstyle={\ttfamily},
-  frame={tb},
-  breaklines=true,
-  columns=[l]{fullflexible},%
-  numbers=left,%
-  xrightmargin=0zw,%
-  xleftmargin=3zw,%
-  numberstyle={\scriptsize},%
-  stepnumber=1,
-  numbersep=1zw,%
-  lineskip=-0.1ex,%
-  tabsize=10
-}
 \title{システムプログラミング１ \\
        レポート}
 
@@ -184,8 +163,107 @@ xspim -mapped_io&
 
   \subsubsection{作成したプログラム}
 
-    \lstinputlisting[caption=A.8節「入力と出力」に示されている方法,label=program1]{k1-2.s}
-    \lstinputlisting[caption= A.9節「システムコール」に示されている方法,label=program2]{k1.s}
+    A.8節「入力と出力」に示されている方法
+    \begin{verbatim}
+     1	        .text
+     2	        .align 2
+     3	main:
+     4	        li      $a0,72
+     5	putc:
+     6	        lw      $t0,0xffff0008
+     7	        li      $t1,1
+     8	        and     $t0,$t0,$t1
+     9	        beqz    $t0,putc
+    10	        sw      $a0,0xffff000c
+    11	        li      $a0,101
+    12	putc2:
+    13	        lw      $t0,0xffff0008
+    14	        li      $t1,1
+    15	        and     $t0,$t0,$t1
+    16	        beqz    $t0,putc2
+    17	        sw      $a0,0xffff000c
+    18	        li      $a0,108
+    19	putc3:
+    20	        lw      $t0,0xffff0008
+    21	        li      $t1,1
+    22	        and     $t0,$t0,$t1
+    23	        beqz    $t0,putc3
+    24	        sw      $a0,0xffff000c
+    25	        li      $a0,108
+    26	putc4:
+    27	        lw      $t0,0xffff0008
+    28	        li      $t1,1
+    29	        and     $t0,$t0,$t1
+    30	        beqz    $t0,putc4
+    31	        sw      $a0,0xffff000c
+    32	        li      $a0,111
+    33	putc5:
+    34	        lw      $t0,0xffff0008
+    35	        li      $t1,1
+    36	        and     $t0,$t0,$t1
+    37	        beqz    $t0,putc5
+    38	        sw      $a0,0xffff000c
+    39	        li      $a0,32
+    40	
+    41	putc6:
+    42	        lw      $t0,0xffff0008
+    43	        li      $t1,1
+    44	        and     $t0,$t0,$t1
+    45	        beqz    $t0,putc6
+    46	        sw      $a0,0xffff000c
+    47	        li      $a0,87
+    48	putc7:
+    49	        lw      $t0,0xffff0008
+    50	        li      $t1,1
+    51	        and     $t0,$t0,$t1
+    52	        beqz    $t0,putc7
+    53	        sw      $a0,0xffff000c
+    54	        li      $a0,111
+    55	putc8:
+    56	        lw      $t0,0xffff0008
+    57	        li      $t1,1
+    58	        and     $t0,$t0,$t1
+    59	        beqz    $t0,putc8
+    60	        sw      $a0,0xffff000c
+    61	        li      $a0,114
+    62	putc9:
+    63	        lw      $t0,0xffff0008
+    64	        li      $t1,1
+    65	        and     $t0,$t0,$t1
+    66	        beqz    $t0,putc9
+    67	        sw      $a0,0xffff000c
+    68	        li      $a0,108
+    69	putc10:
+    70	        lw      $t0,0xffff0008
+    71	        li      $t1,1
+    72	        and     $t0,$t0,$t1
+    73	        beqz    $t0,putc10
+    74	        sw      $a0,0xffff000c
+    75	        li      $a0,100
+    76	putc11:
+    77	        lw      $t0,0xffff0008
+    78	        li      $t1,1
+    79	        and     $t0,$t0,$t1
+    80	        beqz    $t0,putc11
+    81	        sw      $a0,0xffff000c
+    82	        j       $ra
+    \end{verbatim}
+
+    A.9節「システムコール」に示されている方法k1.s
+    \begin{verbatim}
+     1	        .data
+     2	        .align 2
+     3	str:    .asciiz "Hello World"
+     4	
+     5	        .text
+     6	        .align 2
+     7	
+     8	main:   li  $v0,4   #print_strのシスコールを$v0にロード
+     9	        la  $a0,str #プリントする文字列のアドレスをsyscallの引数
+    10	                    #$a0にロードアドレス命令を行う
+    11	        syscall
+    12	        j   $ra     #$raレジスタへ戻り、プログラム終了
+      \end{verbatim}
 
   \subsubsection{考察}
   
@@ -216,21 +294,165 @@ X\200}B
   プログラムは大きく分けて，\verb|main|と\verb|fact|部に分かれる．main部では，まず手続き呼出規約に従ってスタックを確保した．そして課題のフローに従って，引数を設定しfact部を実行後，結果をシステムコールにて印刷し各種のアドレスを復元し，スタックポインタをポップし，プログラムを終了する．fact部では，まずmain部同様に手続き呼出規約に従ってスタックを確保し，再帰的に引数を渡すことが出きるように確保した．引数が$0$より大きいなら再帰処理の\verb|factsub|部に\verb|jal|命令を実行，$0$以下なら$1$を返し，一つ前のfactルーチンを呼出し、その計算結果に引数をかけていくという処理を再帰的に繰り返した．factルーチン終了後は戻りアドレスを復元し，スタックポインタをポップする処理を行いルーチンを終了させている．
 
   \subsubsection{作成したプログラム}
-  \lstinputlisting[caption=10の階乗を再帰的に求めるプログラム,label=programfact]{fact.s}
-  \subsubsection{実行テスト結果}
+  10の階乗を再帰的に求めるプログラム
+\begin{verbatim}
+     1	        .data
+     2	        .align 2
+     3	str:
+     4	        .ascii "The factorial of 10 is "
+     5	        .text
+     6	        .align 2
+     7	print_int:
+     8	        li      $v0,1
+     9	        syscall
+    10	        j       $ra
+    11	print_str:
+    12	        li      $v0,4
+    13	        syscall
+    14	        j       $ra        
+    15	main:
+    16	        subu    $sp,$sp,32  #スタックフレームは３２バイト長で確保をする
+    17	        sw      $ra,20($sp) #戻りアドレスを退避させる
+    18	        sw      $fp,16($sp) #古いフレームポインタを退避
+    19	        addiu   $fp,$sp,28  #新しくフレームポインタを設定
+    20	        #factを呼び出して戻ってから、syscallで$LCとfactの返り値をプリントする
+    21	        li      $a0,10      #引数は10
+    22	        jal     fact
+    23	        move    $t1,$v0     #返り値をt1に退避       
+    24	        la      $a0,str     #a0にテンプレ文のアドレスを記入
+    25	        jal     print_str        
+    26	        move    $a0,$t1     #factの返り値を保存したt1を$a0に収める
+    27	        jal     print_int
+    28	        #退避してあったレジスタを復元したあと呼出側へ戻る
+    29	        lw      $ra,20($sp) #戻りアドレスを復元
+    30	        lw      $fp,16($sp) #フレームポインタを復元
+    31	        addiu   $sp,$sp,32  #スタックポインタをポップする
+    32	        j       $ra
+    33	fact:
+    34	        subu    $sp,$sp,32  #スタックフレームは３２バイト長
+    35	        sw      $ra,20($sp) #戻りアドレスを退避させる
+    36	        sw      $fp,16($sp) #古いフレームポインタを退避
+    37	        addiu   $fp,$sp,28  #新しくフレームポインタを設定
+    38	        sw      $a0,0($fp)  #引数を退避させる# 28($sp)にもってきているもの
+    39	        #引数＞０かどうかを調べる。
+    40	        #引数＜＝０なら１を返す。
+    41	        #引数＞０ならfactルーチンを呼出(n-1)を計算し、その結果にnをかける
+    42	        #上記を再帰的に繰り返す
+    43	        lw      $v0,0($fp)  #nをroadさせておく
+    44	        bgtz    $v0,factsub #引数が0より大きければ再帰処理に飛ぶ
+    45	        li      $v0,1       #0以下なら１
+    46	        j       return
+    47	factsub:
+    48	        lw      $v1,0($fp)  #nをロードする
+    49	        subu    $v0,$v1,1   #n-1
+    50	        move    $a0,$v0     #a0にn-1に戻る
+    51	        jal     fact
+    52	        
+    53	        lw      $v1,0($fp)
+    54	        mul     $v0,$v0,$v1 #n*fact(n-1)
+    55	return: #return処理
+    56	        lw      $ra,20($sp) #戻りアドレスを復元
+    57	        lw      $fp,16($sp) #フレームポインタを復元
+    58	        addiu   $sp,$sp,32  #スタックポインタをポップする
+    59	        j       $ra
+\end{verbatim}
+
+\subsubsection{実行テスト結果}
 \begin{verbatim}
 $ xspim -mapped_io&
 The factorial of 10 is 3628800
 \end{verbatim}
 
- \subsection{課題1-4}
-  \subsubsection{実装内容}
-  まず，課題指示にあるようにプログラムは\verb|main|部と\verb|test_prime|部の２つに分けて設計した．
-  main部では，手続き呼び出し規約に基づきスタックポインタを確保した．そして，$100$個処理するために固定値として\verb|$s0|から\verb|$s3|までそれぞれ最大のループ回数，現在のループ回数，チェック用の数値，判定用の数値を設定した．さらに，1行に10個表示されたら改行するために\verb|$s4|には判定用の数値として$10$を設定している．次に，課題のC言語に倣い\verb|while|処理を行っている．ループ回数が$100$を超えてないか確認し，超えてなければtest\_prime部に飛ぶ．その後，素数ならば内容を表示し，チェック数値，ループ回数をそれぞれインクリメントする．違ったら，表示はせずインクリメントさせる．表示の際に1行に$10$個表示されていたら改行させた．
+\subsubsection{考察}
+本関数は，再帰処理を行うことが指定されていたためスタックを用いて，引数の異なるfactルーチンの値をメモリ上に引数が大きいものから配置し，そのルーチンの引数が小さいものから順に掛け合わすことにより再帰的に計算するように実装を行っている．ループによる実装と大きく異なる点は，自分自身をルーチン内で呼び出していることだから，そのルールを守り，ループとは明らかに異なる実装ができていると考える.
+\subsection{課題1-4}
+\subsubsection{実装内容}
+まず，課題指示にあるようにプログラムは\verb|main|部と\verb|test_prime|部の２つに分けて設計した．
+main部では，手続き呼び出し規約に基づきスタックポインタを確保した．そして，$100$個処理するために固定値として\verb|$s0|から\verb|$s3|までそれぞれ最大のループ回数，現在のループ回数，チェック用の数値，判定用の数値を設定した．さらに，1行に10個表示されたら改行するために\verb|$s4|には判定用の数値として$10$を設定している．次に，課題のC言語に倣い\verb|while|処理を行っている．ループ回数が$100$を超えてないか確認し，超えてなければtest\_prime部に飛ぶ．その後，素数ならば内容を表示し，チェック数値，ループ回数をそれぞれインクリメントする．違ったら，表示はせずインクリメントさせる．表示の際に1行に$10$個表示されていたら改行させた．
 
-  test\_prime部も課題1-4のC言語に倣っている．初期値として最初の素数である$2$を設定．そして，チェック用の数値をループ回数で割っていき素数かそうでないか判定している．素数なら$1$を返し，そうでないなら$0$を返し処理を抜ける．
-  \subsubsection{作成したプログラム}
-   \lstinputlisting[caption=素数を100個表示するプログラム,label=programsosu]{sosu1.s}
+test\_prime部も課題1-4のC言語に倣っている．初期値として最初の素数である$2$を設定．そして，チェック用の数値をループ回数で割っていき素数かそうでないか判定している．素数なら$1$を返し，そうでないなら$0$を返し処理を抜ける．
+\subsubsection{作成したプログラム}
+素数を100個表示するプログラム
+\begin{verbatim}
+     1	        .data
+     2	        .align 2
+     3	space:
+     4	        .asciiz " "
+     5	enter:
+     6	        .asciiz "\n"
+     7	        
+     8	        .text
+     9	        .align 2        
+    10	test_prime:
+    11	        subu    $sp,$sp,32      #スタックポインター
+    12	        sw      $ra,20($sp)     #$ra
+    13	        sw      $fp,16($sp)     #フレームポインター
+    14	        addiu   $fp,$sp,28      #フレームポインターのセット
+    15	        li      $t0,2           # 1は素数ではないから２を初期値にセット
+    16	prime_for:
+    17	        beq     $t0, $a0, return1       # return　1 もし n が素数なら (i==n)
+    18	        bgt     $t0, $a0, prime_exit    # forループを抜ける． もし n > i　なら．
+    19	        rem     $t1, $a0, $t0           # $t1 = n % i　ｎをiで割ったあまり
+    20	        beqz    $t1, prime_exit         # goto Exit_prime if $t1 == 0
+    21	        addi    $t0, $t0, 1             # i++
+    22	        j       prime_for               # 再びループへ
+    23	return1:
+    24	        li      $v0,1           #もしnが素数なら１を代入して返す
+    25	        lw      $ra,20($sp)
+    26	        lw      $fp,16($sp)
+    27	        addiu   $sp,$sp,32
+    28	        j       $ra             #mainへ戻る
+    29	prime_exit:
+    30	        li      $v0,0           #もしnが素数でないなら０を代入して返す
+    31	        lw      $ra,20($sp)
+    32	        lw      $fp,16($sp)
+    33	        addiu   $sp,$sp,32
+    34	        j       $ra             #ループを抜ける
+    35	main:
+    36	        subu    $sp,$sp,32      #stackpointer
+    37	        sw      $ra,20($sp)     #$ra
+    38	        sw      $fp,16($sp)     #flamepointer
+    39	        addiu   $fp,$sp,28      #set fp
+    40	        li      $s0,100         #最大ループ回数　(match<100)
+    41	        li      $s1,0           #現在のループ回数　(match)
+    42	        li      $s2,2           #チェック用の数値 n (n=2)
+    43	        li      $s3,1           #test_prime(n) == $s3
+    44	        li      $s4,10          #10個表示されたら改行するため．print  \n   
+    45	while:  
+    46	        beq     $s0,$s1,exit    # s1 == 100 ならば（０～９９まで），exitに行く
+    47	        move    $a0,$s2         # $s2 => $a0に移動
+    48	        jal     test_prime        
+    49	        bne     $v0,$s3,else    # $v0 != 1 test_primeから帰ってきた数値で検証する       
+    50	        move    $a0,$s2         # 印刷のために，数字を入れる
+    51	        li      $v0,1           #１はint
+    52	        syscall        
+    53	        la      $a0, space      # 空白を印刷
+    54	        li      $v0,4           #４は文字列
+    55	        syscall        
+    56	        addiu   $s1,$s1,1               #現在のループ回数を増加       
+    57	        rem     $t2, $s1, $s4           # $t2 = n % i____１０個表示されたかどうか
+    58	        beqz    $t2, print_enter        # 改行表示　もし $t2（個数） == 0        
+    59	else:   
+    60	        addiu   $s2, $s2, 1             # n = n + 1 
+    61	        j       while                   # whileループを繰り返す
+    62	exit:   
+    63	        lw      $ra, 20($sp)    # Restore return address
+    64	        lw      $fp, 16($sp)    # Restore frame pointer
+    65	        addiu   $sp, $sp, 32    # Pop stack frame
+    66	        j       $ra             # End this program        
+    67	print_enter:
+    68	        subu    $sp,$sp,32      #stackpointer
+    69	        sw      $ra,20($sp)     #$ra
+    70	        sw      $fp,16($sp)     #flamepointer
+    71	        addiu   $fp,$sp,28      #set fp
+    72	        la      $a0,enter
+    73	        li      $v0,4
+    74	        syscall
+    75	        lw      $ra, 20($sp)    # Restore return address
+    76	        lw      $fp, 16($sp)    # Restore frame pointer
+    77	        addiu   $sp, $sp, 32    # Pop stack frame
+    78	        j       $ra             #return
+\end{verbatim}
    \subsubsection{実行テスト結果}
    \begin{verbatim}
 $ xspim -mapped_io&
@@ -246,11 +468,117 @@ $ xspim -mapped_io&
 467 479 487 491 499 503 509 521 523 541 
    \end{verbatim}
 
+\subsubsection{考察}
+今回の関数は，\verb|$s|とつくレジスタに値や固定値を登録して作成している．プログラム中でこの値が呼び出された先で破壊されることはないため不具合なく実行することができている．しかし，仮に破壊的に利用される場合は，予期しないことが起こる可能性があるため，呼び出される前に一度値を保存して呼び出し後に復元する実装を行うべきだと考える．もしくは，破壊的に利用してもよいレジスタを用いることが望ましいと感じたため，改良の余地がある．
  \subsection{課題1-5}
   \subsubsection{実装内容}
   課題1-4の\verb|main|部と\verb|test_prime|部を用いている．また，\verb|.space|で$400$バイト分の配列の確保も行った．課題1-4と大きく異なるのは，素数を画面に表示するのではなく配列に格納するように実装しているところである．格納元レジスタを倍々にすることでアドレスを指定し4バイト単位で格納することで$100$個分の配列機能を実現し，中身の要素を表示している．また，分岐命令を用いて，システムコールにより受け取った値に応じて処理を分岐させた．0ならばプロセスを終了し，負の値もしくは$100$より大きい値ならばエラー文を表示している．
   \subsubsection{作成したプログラム}
-   \lstinputlisting[caption=配列で入力に応じて素数を表示するプログラム,label=programsosu2]{sosu2.s}
+   配列で入力に応じて素数を表示するプログラム
+\begin{verbatim}
+     1	array:
+     2	        .space 400      #400バイト分（１００個分）の配列用意
+     3	        
+     4	        .data
+     5	        .align 2
+     6	space:
+     7	        .asciiz " "
+     8	enter:
+     9	        .asciiz "\n"
+    10	start:      
+    11	        .asciiz "To quit, type 0\n\n"        
+    12	mark:
+    13	        .asciiz "\n> "
+    14	owari:
+    15	        .asciiz "\nGood bye :)\n\n"
+    16	excep:
+    17	        .asciiz "\nPlease type correct number\n"
+    18	        
+    19	        .text
+    20	        .align 2
+    21	        
+    22	test_prime:
+    23	        subu    $sp,$sp,32      #スタックポインター
+    24	        sw      $ra,20($sp)     #$ra
+    25	        sw      $fp,16($sp)     #フレームポインター
+    26	        addiu   $fp,$sp,28      #フレームポインターのセット
+    27	        li      $t0,2           # 1は素数ではないから２を初期値にセット
+    28	prime_for:
+    29	        beq     $t0, $a0, return1       # return　1 もし n が素数なら (i==n)
+    30	        bgt     $t0, $a0, prime_exit    # forループを抜ける． もし n > i　なら．
+    31	        rem     $t1, $a0, $t0           # $t1 = n % i　ｎをiで割ったあまり
+    32	        beqz    $t1, prime_exit         # goto Exit_prime if $t1 == 0
+    33	        addi    $t0, $t0, 1             # i++
+    34	        j       prime_for               # 再びループへ
+    35	return1:
+    36	        li      $v0,1           #もしnが素数なら１を代入して返す
+    37	        lw      $ra,20($sp)
+    38	        lw      $fp,16($sp)
+    39	        addiu   $sp,$sp,32
+    40	        j       $ra             #mainへ戻る
+    41	prime_exit:
+    42	        li      $v0,0           #もしnが素数でないなら０を代入して返す
+    43	        lw      $ra,20($sp)
+    44	        lw      $fp,16($sp)
+    45	        addiu   $sp,$sp,32
+    46	        j       $ra             #ループを抜ける
+    47	main:
+    48	        subu    $sp,$sp,32      #　stackpointer
+    49	        sw      $ra,20($sp)     #　$ra
+    50	        sw      $fp,16($sp)     #　flamepointer
+    51	        addiu   $fp,$sp,28      #　set fp
+    52	        li      $v0, 4          # syscall of print_string
+    53	        la      $a0, start      # startラベルの内容を入れる
+    54	        syscall                 # 印刷内容　"To quit, type 0"
+    55	        li      $s0,100         #最大ループ回数　(match<100)
+    56	        li      $s1,0           #現在のループ回数　(match)
+    57	        li      $s2,2           #チェック用の数値 n (n=2)
+    58	        li      $s3,1           #test_prime(n) == $s3
+    59	        la      $a1,array       #$a1にarrayのアドレスを入れる
+    60	while:  
+    61	        beq     $s0,$s1,exit    # s1 == 100 ならば（０～９９まで），exitに行く
+    62	        move    $a0,$s2         # $s2 => $a0に移動
+    63	        jal     test_prime       
+    64	        bne     $v0,$s3,else    # $v0 != 1 test_primeから帰ってきた数値で検証する
+    65	        li      $t4, 4          # For array を増加（４バイト単位）
+    66	        addu    $a1, $a1, $t4   # $a1 = $a1 + 4
+    67	        sw      $s2, 0($a1)     # $s2（素数）=>$a1が指すアドレスの中の先頭にいれる   
+    68	        addiu   $s1,$s1,1       #　現在のループ回数を増加      
+    69	else:   
+    70	        addiu   $s2, $s2, 1     # n = n + 1 
+    71	        j       while           # go to Loop
+    72	exit:   
+    73	        li      $v0, 4          # syscall of print_string
+    74	        la      $a0, mark       # 印字内容　">"
+    75	        syscall                 # 印刷
+    76	        la      $a1, array      # Initialize $a1
+    77	        li      $v0, 5          # For syscall of read_int
+    78	        syscall                 # 何番目の素数かを入力する       
+    79	        beqz    $v0,end         #　0か文字なら終了
+    80	        bltz    $v0,error       # 負ならエラー
+    81	        bgtu    $v0,$s0,error   #　１００より大きくてもエラー    
+    82	        move    $t3, $v0        # 入力された値$v0を $t3　に
+    83	        addu    $t3, $t3, $t3   # $t3 = $t3 * 2
+    84	        addu    $t3, $t3, $t3   # $t3 = $t3 * 2　４バイト分になる
+    85	        addu    $a1, $a1, $t3   # $a1 = $a1       
+    86	        lw      $a0, 0($a1)     # $a1 のアドレスから 4バイト(word)取り出して $a0 に代入(load)
+    87	        li      $v0, 1          # For syscall of print_int
+    88	        syscall                 # Print prime       
+    89	        j       exit
+    90	error:
+    91	        li    $v0, 4            # for syscall of print_string
+    92	        la    $a0, excep        # Print error message
+    93	        syscall                 # print
+    94	        j     exit 
+    95	end:
+    96	        li      $v0, 4          # for syscall of print_string
+    97	        la      $a0, owari      # good,bye
+    98	        syscall                 # print       
+    99	        lw      $ra, 20($sp)    # Restore return address
+   100	        lw      $fp, 16($sp)    # Restore frame pointer
+   101	        addiu   $sp, $sp, 32    # Pop stack frame       
+   102	        j       $ra             # End this program
+\end{verbatim}
    \subsubsection{実行テスト結果}
    \begin{verbatim}
 $ xspim -mapped_io&
@@ -266,6 +594,8 @@ Please type correct number
 > 0
 Good bye :)
    \end{verbatim}
+\subsubsection{考察}
+本プログラムでは，キーボードから数値が入力されることを前提としている．そのため，数値以外の文字列を入力すると何も表示されることなくSPIMが終了する．そして，誤って入力した際に，\verb|BS|キーにて文字や数値を消去することができない．これはユーザの利便性を落とす可能性があるため，入力されたデータをチェックする機構が必要だと考える．
 
 \section{感想}
 本演習でのMIPSを用いたプログラミングを通し，オペレーションシステムがメモリにテキストとデータをどう配置していたのかということを垣間見ることができた．また，OSの講義で学んだ概念を実践的に知ることができたので，他の講義の理解を深めることにも繋がった．高級言語と違い，上から順番に実行されていくという性質に慣れるまでに時間がかかったため，特に課題1-3における回帰処理の際に自力では解決することができず解答に頼ってしまったが講義資料や教科書を再三読み直すことで理解ができるようになった．また，スタックポインタやフレームポインタなどの複雑な理屈を深く理解をするまでには至らなかったが，自分が意図するようにレジスタに戻るべき処理を伝えるようにプログラムを記述するまではできた．システムプログラミング2では，今回学んだことをさらに理解してから応用できるようにしたい．
