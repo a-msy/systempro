@@ -1,0 +1,131 @@
+\documentclass[a4j,11pt]{jarticle}
+\usepackage[top=25truemm,  bottom=30truemm,
+            left=25truemm, right=25truemm]{geometry}
+\usepackage{ascmac}
+\usepackage{verbatim}
+\title{システムプログラミング１ \\
+       レポート}
+
+% ToDo: 自分自身の氏名と学生番号に書き換える
+\author{氏名: 今田　将也 (IMADA, Masaya) \\
+        学生番号: 09430509}
+
+% ToDo: 教員の指示に従って適切に書き換える
+\date{出題日: 2019年10月07日 \\
+      提出日: 2019年11月20日 \\
+      締切日: 2019年11月25日 \\}  % 注：最後の\\は不要に見えるが必要．
+
+\begin{document}
+\maketitle
+
+% 目次つきの表紙ページにする場合はコメントを外す
+%{\footnotesize \tableofcontents \newpage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{概要} \label{chap:abstract}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+本演習では，PIMというMIPS CPUシミュレータのハードウェア上にC言語とアセンブリ言語を使用して文字の表示と入力のためのシステムコールライブラリを作成する． さらに，そのライブラリを使用して printf 及び gets 相当を C言語で作成する． 最後に，それらを利用した応用プログラムを動作させる．
+
+
+なお、与えられた課題内容を以下に述べる．
+
+\subsection{課題内容}\label{kadai}
+以下の課題についてレポートをする． プログラムは，MIPSアセンブリ言語及びC言語で記述し，SPIMを用いて動作を確認している．
+\begin{description}
+
+\item[2-1]  SPIMが提供するシステムコールを C言語から実行できるようにしたい． 教科書A.6節 「手続き呼出し規約」に従って，各種手続きをアセンブラで記述せよ． ファイル名は， syscalls.s とすること．また，記述した syscalls.s の関数をC言語から呼び出すことで， ハノイの塔(hanoi.c とする)を完成させよ． 
+\begin{verbatim}
+ 1: void hanoi(int n, int start, int finish, int extra)
+ 2: {
+ 3:   if (n != 0){
+ 4:     hanoi(n - 1, start, extra, finish);
+ 5:     print_string("Move disk ");
+ 6:     print_int(n);
+ 7:     print_string(" from peg ");
+ 8:     print_int(start);
+ 9:     print_string(" to peg ");
+10:     print_int(finish);
+11:     print_string(".\n");
+12:     hanoi(n - 1, extra, finish, start);
+13:   }
+14: }
+15: main()
+16: {
+17:   int n;
+18:   print_string("Enter number of disks> ");
+19:   n = read_int();
+20:   hanoi(n, 1, 2, 3);
+21: }
+\end{verbatim}
+spim-gcc によって hanoi.s ができたら， hanoi.s, syscalls.s の順に SPIM 上でロードして実行．
+
+実行例は以下の通り:
+\begin{verbatim}
+Enter number of disks> 3
+Move disk 1 from peg 1 to peg 2.
+Move disk 2 from peg 1 to peg 3.
+Move disk 1 from peg 2 to peg 3.
+Move disk 3 from peg 1 to peg 2.
+Move disk 1 from peg 3 to peg 1.
+Move disk 2 from peg 3 to peg 2.
+Move disk 1 from peg 1 to peg 2.
+\end{verbatim} 
+
+\item[2-2]hanoi.s を例に spim-gcc の引数保存に関するスタックの利用方法について，説明せよ． そのことは，規約上許されるスタックフレームの最小値24とどう関係しているか． このスタックフレームの最小値規約を守らないとどのような問題が生じるかについて解説せよ．
+
+\item[2-3]以下のプログラム report2-1.c をコンパイルした結果をもとに， auto変数とstatic変数の違い，ポインタと配列の違いについてレポートせよ．
+\begin{verbatim}
+ 1: int primes_stat[10];
+ 2: 
+ 3: char * string_ptr   = "ABCDEFG";
+ 4: char   string_ary[] = "ABCDEFG";
+ 5: 
+ 6: void print_var(char *name, int val)
+ 7: {
+ 8:   print_string(name);
+ 9:   print_string(" = ");
+10:   print_int(val);
+11:   print_string("\n");
+12: }
+13: 
+14: main()
+15: {
+16:   int primes_auto[10];
+17: 
+18:   primes_stat[0] = 2;
+19:   primes_auto[0] = 3;
+20: 
+21:   print_var("primes_stat[0]", primes_stat[0]);
+22:   print_var("primes_auto[0]", primes_auto[0]);
+23: }
+\end{verbatim}
+
+\item[2-4]
+printf など，一部の関数は，任意の数の引数を取ることができる． これらの関数を可変引数関数と呼ぶ． MIPSのCコンパイラにおいて可変引数関数の実現方法について考察し，解説せよ．
+
+\item[2-5]printf のサブセットを実装し， SPIM上でその動作を確認する応用プログラム(自由なデモプログラム)を作成せよ． フルセットにどれだけ近いか，あるいは，よく使う重要な仕様だけをうまく切り出して， 実用的なサブセットを実装しているかについて評価する． ただし，浮動小数は対応しなくてもよい(SPIM自体がうまく対応していない)． 加えて，この printf を利用した応用プログラムの出来も評価の対象とする.
+
+\end{description}
+\subsection{xspimの実行方法}
+\begin{verbatim}
+$ xspim -mapped_io&
+\end{verbatim}
+でコンソール上で実行後，必要なアセンブリファイルをloadし，runすることで実行した．
+
+\subsection{cソースコードからアセンブリファイルへの変換方法} 
+\begin{verbatim}
+$ spim-gcc file.c
+\end{verbatim}
+でコンソール上で実行後，file.cに対応するfile.sというアセンブリファイルが作られる．
+\section{課題レポート}
+
+ \subsection{課題1-1}
+
+  \subsubsection{作成したプログラム}
+
+  \subsubsection{考察}
+
+\section{感想}
+
+\end{document}
