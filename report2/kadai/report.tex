@@ -74,6 +74,11 @@ Move disk 1 from peg 1 to peg 2.
 
 \item[2-2]hanoi.s を例に spim-gcc の引数保存に関するスタックの利用方法について，説明せよ． そのことは，規約上許されるスタックフレームの最小値24とどう関係しているか． このスタックフレームの最小値規約を守らないとどのような問題が生じるかについて解説せよ．
 
+\verb|hanoi.c|のソースコード
+\begin{verbatim}
+
+\end{verbatim}
+
 \item[2-3]以下のプログラム report2-1.c をコンパイルした結果をもとに， auto変数とstatic変数の違い，ポインタと配列の違いについてレポートせよ．
 \begin{verbatim}
  1: int primes_stat[10];
@@ -101,8 +106,7 @@ Move disk 1 from peg 1 to peg 2.
 23: }
 \end{verbatim}
 
-\item[2-4]
-printf など，一部の関数は，任意の数の引数を取ることができる． これらの関数を可変引数関数と呼ぶ． MIPSのCコンパイラにおいて可変引数関数の実現方法について考察し，解説せよ．
+\item[2-4]printf など，一部の関数は，任意の数の引数を取ることができる． これらの関数を可変引数関数と呼ぶ． MIPSのCコンパイラにおいて可変引数関数の実現方法について考察し，解説せよ．
 
 \item[2-5]printf のサブセットを実装し， SPIM上でその動作を確認する応用プログラム(自由なデモプログラム)を作成せよ． フルセットにどれだけ近いか，あるいは，よく使う重要な仕様だけをうまく切り出して， 実用的なサブセットを実装しているかについて評価する． ただし，浮動小数は対応しなくてもよい(SPIM自体がうまく対応していない)． 加えて，この printf を利用した応用プログラムの出来も評価の対象とする.
 
@@ -120,7 +124,137 @@ $ spim-gcc file.c
 でコンソール上で実行後，file.cに対応するfile.sというアセンブリファイルが作られる．
 \section{課題レポート}
 
- \subsection{課題1-1}
+ \subsection{2-1}
+以下に作成したプログラムと，作成内容、また作成時の考察を記載する．
+
+  \subsubsection{作成したプログラム}
+  syscalls.s
+\begin{verbatim}
+     1	        .text
+     2	        .align  2
+     3	
+     4	_print_int:
+     5	        subu  $sp, $sp, 24
+     6	        sw    $ra, 20($sp)
+     7	
+     8	        li    $v0, 1  # 1: print_int
+     9	        syscall
+    10	
+    11	        lw    $ra, 20($sp)
+    12	        addu  $sp, $sp, 24
+    13	        j     $ra
+    14	
+    15	_print_string:
+    16	        subu  $sp, $sp, 24
+    17	        sw    $ra, 20($sp)
+    18	
+    19	        li    $v0, 4  # 4: print_string
+    20	        syscall
+    21	
+    22	        lw    $ra, 20($sp)
+    23	        addu  $sp, $sp, 24
+    24	        j     $ra
+    25	
+    26	_read_int:
+    27	        subu  $sp, $sp, 24
+    28	        sw    $ra, 20($sp)
+    29	
+    30	        li    $v0, 5  # 5: read_int
+    31	        syscall
+    32	
+    33	        lw    $ra, 20($sp)
+    34	        addu  $sp, $sp, 24
+    35	        j     $ra
+    36	
+    37	_read_string:
+    38	        subu  $sp, $sp, 24
+    39	        sw    $ra, 20($sp)
+    40	
+    41	        li    $v0, 8  # 8: read_string
+    42	        syscall
+    43	
+    44	        lw    $ra, 20($sp)
+    45	        addu  $sp, $sp, 24
+    46	        j     $ra
+    47	
+    48	_exit:
+    49	        subu  $sp, $sp, 24
+    50	        sw    $ra, 20($sp)
+    51	
+    52	        li    $v0, 10  # 10: exit
+    53	        syscall
+    54	
+    55	        lw    $ra, 20($sp)
+    56	        addu  $sp, $sp, 24
+    57	        j     $ra
+    58	
+    59	_print_char:
+    60	        subu  $sp, $sp, 24
+    61	        sw    $ra, 20($sp)
+    62	
+    63	        li    $v0, 11  # 11: print_char
+    64	        syscall
+    65	
+    66	        lw    $ra, 20($sp)
+    67	        addu  $sp, $sp, 24
+    68	        j     $ra
+    69	
+    70	_read_char:        
+    71	        subu  $sp, $sp, 24
+    72	        sw    $ra, 20($sp)
+    73	
+    74	        li    $v0, 12  # 12: _read_char
+    75	        syscall
+    76	
+    77	        lw    $ra, 20($sp)
+    78	        addu  $sp, $sp, 24
+    79	        j     $ra
+\end{verbatim}
+
+  \subsubsection{考察}
+作成は，手続き呼出し規約に基づいて，各ルーチンごとにスタックポインタをルーチンの開始時に確保し，終了時に破棄して呼び出された関数に戻る設計にしている．\verb|syscall|でカーネルに所望することを\verb|$v0|レジスタへ格納し，\verb|syscall|を呼び出している．
+
+\verb|print_int|に対応する関数は，$4$行目から$13$行目に記載している．\verb|print_string|に対応する関数は，$15$行目から$24$行目に記載している．\verb|read_int|に対応する関数は，$26$行目から$35$行目に記載している．\verb|read_string|に対応する関数は，$37$行目から$46$行目に記載している．\verb|exit|に対応する関数は，$48$行目から$57$行目に記載している．\verb|print_char|に対応する関数は，$59$行目から$68$行目に記載している．\verb|read_char|に対応する関数は，$70$行目から$79$行目に記載している．
+
+なお、今回の\verb|hanoi.c|には用いないが，文字列をユーザから受け付ける\verb|read_string|，数値をユーザから受け付ける\verb|read_int|と文字を表示する\verb|print_char|と文字をユーザから受け付ける\verb|read_char|，そして，プログラムを終了する\verb|exit|を作成した．
+  
+作成したプログラム中のラベルの先頭にアンダーバーをつけているがこれは，本演習で用いたgccのルールでコンパイラに依存するものであるが，アセンブリ中で\verb|_function_name|と記述しておくと，C言語から\verb|function_name|で呼び出すことができるからである．
+
+
+ \subsection{2-2}
+以下に課題内容に対する考察を記載する．
+  \subsubsection{考察}
+考察のために，以下に
+図や表をつくってみて比較して考察をしてみる。
+自分で書いたCのプログラムとかで考察するのもよい。
+
+
+ \subsection{2-3}
+以下に課題内容に対する考察を記載している．先に，auto変数とstatic変数の違いについて述べた後にポインタと配列の違いについてC言語とアセンブリの観点から述べる．
+  \subsubsection{作成したプログラム}
+
+  \subsubsection{考察}
+まず，auto変数
+
+
+図や表をつくってみて比較して考察をしてみる。
+自分で書いたCのプログラムとかで考察するのもよい。
+【autoとstaticの違い】
+１９行目確保したスタック上に存在している。スタックの絵を書いてみよう。
+static関数はプログラムの終わりまで存在するが、auto変数は該当の関数呼び出しが終わったら領域が開放されて値が使えなくなる。
+
+同じ名前の変数が用意された異なるファイルを2つ読み込むとどうなるのかについて調べてみる。
+
+
+【ポインタと配列の違い】
+
+ \subsection{2-4}
+
+  \subsubsection{作成したプログラム}
+
+  \subsubsection{考察}
+
+ \subsection{2-5}
 
   \subsubsection{作成したプログラム}
 
