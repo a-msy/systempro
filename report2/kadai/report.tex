@@ -210,8 +210,9 @@ $ spim-gcc file.c
     78	        addu  $sp, $sp, 24
     79	        j     $ra
 \end{verbatim}
-
-  \subsubsection{考察}
+\subsubsection{ハノイの塔について}
+ハノイの塔とは
+  \subsubsection{プログラムの説明及び作成時の考察}
 作成は，手続き呼出し規約に基づいて，各ルーチンごとにスタックポインタをルーチンの開始時に確保し，終了時に破棄して呼び出された関数に戻る設計にしている．\verb|syscall|でカーネルに所望することを\verb|$v0|レジスタへ格納し，\verb|syscall|を呼び出している．
 
 \verb|print_int|に対応する関数は，$4$行目から$13$行目に記載している．\verb|print_string|に対応する関数は，$15$行目から$24$行目に記載している．\verb|read_int|に対応する関数は，$26$行目から$35$行目に記載している．\verb|read_string|に対応する関数は，$37$行目から$46$行目に記載している．\verb|exit|に対応する関数は，$48$行目から$57$行目に記載している．\verb|print_char|に対応する関数は，$59$行目から$68$行目に記載している．\verb|read_char|に対応する関数は，$70$行目から$79$行目に記載している．
@@ -223,19 +224,171 @@ $ spim-gcc file.c
 
  \subsection{2-2}
 以下に課題内容に対する考察を記載する．
-  \subsubsection{考察}
-考察のために，以下に
-図や表をつくってみて比較して考察をしてみる。
-自分で書いたCのプログラムとかで考察するのもよい。
+  \subsubsection{spim-gccの引数保存に関するスタックの利用方法}
+説明のために，以下に\verb|hanoi.s|の冒頭の数行を抜粋する．
+\begin{verbatim}
+    30	_hanoi:
+    31		subu	$sp,$sp,24
+    32		sw	    $ra,20($sp)
+    33		sw	    $fp,16($sp)
+    34		move	$fp,$sp
+    35		sw	    $a0,24($fp)
+    36		sw	    $a1,28($fp)
+    37		sw	    $a2,32($fp)
+    38		sw	    $a3,36($fp)
+    39		lw	    $v0,24($fp)
+\end{verbatim}
+31行目で，スタックを24バイト分確保していることが分かる．しかし，35行目から利用されているレジスタ\verb|$a0|~\verb|$a3|の4つは，確保したスタックよりも後方の\verb|_hanoi|を呼び出した側の関数が確保したスタックを使用している．ここで，新しく関数から呼び出された表\ref{tab:stack}にスタックの様子を表に表してみる．
+\begin{table}[htb]
+\label{tab:stack}
+\centering
+\begin{tabular}{|l|l|l|l|}
+\hline
+\$sp  & offset & 内容   & 備考       \\ \hline
+新sp   & -24    & -    & 未使用      \\ \hline
+      & -20    & -    & 未使用      \\ \hline
+      & -16    & -    & 未使用      \\ \hline
+      & -12    & -    & 未使用      \\ \hline
+      & -8     & \$fp & フレームポインタ \\ \hline
+      & -4     & \$ra & 戻りアドレス   \\ \hline
+旧\$sp & 0      & \$a0 & 第1引数     \\ \hline
+      & +4     & \$a1 & 第2引数     \\ \hline
+      & +8     & \$a2 & 第3引数     \\ \hline
+      & +12    & \$a3 & 第4引数     \\ \hline
+      & +16    & ??   & 呼出側で使用   \\ \hline
+      & +20    & ??   & 呼出側で使用   \\ \hline
+      & ...    & ??   & 呼出側で使用   \\ \hline
+\end{tabular}
+\caption{スタックの様子}
+\end{table}
+MIPSのコンパイラは,1つ目の引数は\verb|$a0|に,2つ目の引数は\verb|$a1|にという具合に\verb|$a|のレジスタを使って引数を渡すことになっている．しかし，\verb|$a0|〜\verb|$a3|の4つしかないため，5つ目の引数は，スタックに保存して渡す．また，手続き呼出し規約に基づくと，\verb|offset =|$0$〜＋$15$の領域が必要になる．
 
+まとめると，関数を呼び出す側は\verb|$a0|〜\verb|$a3|を保存する領域を余分に確保しておき，呼び出された側がその領域を使って引数を保存することになっている．
 
+\subsubsection{最小値規約について}
+最小値規約とはspim-gccにおいて，規約上許されるスタックフレームの最小値が24であるという規約である．全24バイトのうち16バイトは\verb|$a|レジスタの4語分であり，残りの8バイトはフレームポインタに利用される\verb|$fp|レジスタの1語分と戻りアドレスに利用される\verb|$ra|レジスタである．
+
+この決まりを守らない関数が，仮に呼出される側であった場合は，\verb|$a0|〜\verb|$a3|の保存に自分で確保した領域しか使わないであろうから， 他の関数のスタック領域を破壊することがない．そのため，gccから呼出しても問題がない．しかし，逆の場合,すなわち呼び出す側だった場合には，自分の関数のために確保したスタックを呼出し先が破壊することになるという問題がある．
+
+この方法には利点がある．
+\begin{description}
+\item[利点1]被呼出し関数が \verb|$a0|〜\verb|$a3|の保存をするかしないかを決定できるので， 関数内で\verb|$a0|〜\verb|$a3|を書換えなければ，この保存は省略できるため，メモリへの書込み処理が減り，高速化が望める．\verb|$a0|〜\verb|$a3|を呼び出す側で保存することにしてしまうと，上記の4つの引数をメモリに格納する操作が必ず必要になる．これでは，引数をレジスタ渡しではなく，実体として渡していることになる．
+\item[利点2]第5引数以降が第4引数までの確保領域と連続するため，被呼出し関数から見れば，第1引数からのすべての引数が規則正しくメモリ上に並ぶことになる．そのため，コンパイラの実装が容易になる．
+\end{description}
+C言語との連携には，この規約を守る必要があるため， 最小のスタックフレームサイズは，24バイトとなっている．(引数1つ目〜4つ目(\verb|$a0|〜\verb|$a3|),\verb|$ra|,\verb|$fp|の6レジスタ*4バイト = 24バイト) 
  \subsection{2-3}
 以下に課題内容に対する考察を記載している．先に，auto変数とstatic変数の違いについて述べた後にポインタと配列の違いについてC言語とアセンブリの観点から述べる．
-  \subsubsection{作成したプログラム}
+  \subsubsection{report2-1.cのコンパイル結果}
+\begin{verbatim}
+     1		.file	1 "report2-1.c"
+     2	
+     3	 # -G value = 0, Arch = r2000, ISA = 1
+     4	 # GNU C version 2.96 20000731 (Red Hat Linux 7.3 2.96-113.2) (mipsel-linux) 
+compiled by GNU C version 2.96 20000731 (Red Hat Linux 7.3 2.96-113.2).
+     5	 # options passed:  -mno-abicalls -mrnames -mmips-as
+     6	 # -mno-check-zero-division -march=r2000 -O0 -fleading-underscore
+     7	 # -finhibit-size-directive -fverbose-asm
+     8	 # options enabled:  -fpeephole -ffunction-cse -fkeep-static-consts
+     9	 # -fpcc-struct-return -fsched-interblock -fsched-spec -fbranch-count-reg
+    10	 # -fnew-exceptions -fcommon -finhibit-size-directive -fverbose-asm
+    11	 # -fgnu-linker -fargument-alias -fleading-underscore -fident -fmath-errno
+    12	 # -mrnames -mno-check-zero-division -march=r2000
+    13	
+    14	
+    15		.rdata
+    16		.align	2
+    17	$LC0:
+    18		.asciiz	"ABCDEFG"
+    19		.data
+    20		.align	2
+    21	_string_ptr:
+    22		.word	$LC0
+    23		.align	2
+    24	_string_ary:
+    25		.asciiz	"ABCDEFG"
+    26		.rdata
+    27		.align	2
+    28	$LC1:
+    29		.asciiz	" = "
+    30		.align	2
+    31	$LC2:
+    32		.asciiz	"\n"
+    33		.text
+    34		.align	2
+    35	_print_var:
+    36		subu	$sp,$sp,24
+    37		sw	$ra,20($sp)
+    38		sw	$fp,16($sp)
+    39		move	$fp,$sp
+    40		sw	$a0,24($fp)
+    41		sw	$a1,28($fp)
+    42		lw	$a0,24($fp)
+    43		jal	_print_string
+    44		la	$a0,$LC1
+    45		jal	_print_string
+    46		lw	$a0,28($fp)
+    47		jal	_print_int
+    48		la	$a0,$LC2
+    49		jal	_print_string
+    50		move	$sp,$fp
+    51		lw	$ra,20($sp)
+    52		lw	$fp,16($sp)
+    53		addu	$sp,$sp,24
+    54		j	$ra
+    55		.rdata
+    56		.align	2
+    57	$LC3:
+    58		.asciiz	"primes_stat[0]"
+    59		.align	2
+    60	$LC4:
+    61		.asciiz	"primes_auto[0]"
+    62		.text
+    63		.align	2
+    64	main:
+    65		subu	$sp,$sp,64
+    66		sw	$ra,60($sp)
+    67		sw	$fp,56($sp)
+    68		move	$fp,$sp
+    69		li	$v0,2			# 0x2
+    70		sw	$v0,_primes_stat
+    71		li	$v0,3			# 0x3
+    72		sw	$v0,16($fp)
+    73		la	$a0,$LC3
+    74		lw	$a1,_primes_stat
+    75		jal	_print_var
+    76		la	$a0,$LC4
+    77		lw	$a1,16($fp)
+    78		jal	_print_var
+    79		move	$sp,$fp
+    80		lw	$ra,60($sp)
+    81		lw	$fp,56($sp)
+    82		addu	$sp,$sp,64
+    83		j	$ra
+    84	
+    85		.comm	_primes_stat,40
+\end{verbatim}
 
-  \subsubsection{考察}
+  \subsubsection{C言語から見たstaticとautoの違い}
+説明のために，以下に課題のCのソースコードを一部抜粋する．
+\begin{verbatim}
+     1	int primes_stat[10]; 
+     2	char * string_ptr   = "ABCDEFG";
+     3	char   string_ary[] = "ABCDEFG";
+     4	main()
+     5	{
+     6	int primes_auto[10];
+     7	primes_stat[0] = 2;
+     8	primes_auto[0] = 3;
+     9	print_var("primes_stat[0]", primes_stat[0]);
+    10	print_var("primes_auto[0]", primes_auto[0]);
+    11	}
+\end{verbatim}
+1行目の関数外で宣言されている変数は，static(静的)変数である．また，5行目の関数内で宣言されている変数は，auto(自動)変数であるという．以下にそれぞれの変数の特徴を示してみる．
+\begin{description}
+\item[static変数]プログラムの開始から終了まで，値を保持しつづける．
+\item[auto変数]関数の中で宣言され，その関数の実行開始時から 終了時までの間，その値を保持する．
+\end{description}
 まず，auto変数
-
 
 図や表をつくってみて比較して考察をしてみる。
 自分で書いたCのプログラムとかで考察するのもよい。
@@ -250,12 +403,21 @@ static関数はプログラムの終わりまで存在するが、auto変数は�
 
  \subsection{2-4}
 
-  \subsubsection{作成したプログラム}
-
   \subsubsection{考察}
 
  \subsection{2-5}
+概要
 
+可変引数関数とは
+
+シー言語に置ける可変引数関数の実現方法
+
+MIPSにおける可変引数の実現方法
+
+C言語との違い
+%http://totutotu.hatenablog.com/entry/2015/01/15/C%E3%81%A8%E3%82%A2%E3%82%BB%E3%83%B3%E3%83%96%E3%83%AA%E3%81%A7myprintf%28%29%E3%82%92%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B%E3%83%BC%E5%9C%9F%E5%8F%B0%E4%BD%9C%E3%82%8A%E7%B7%A8%E3%83%BC %
+%http://totutotu.hatenablog.com/entry/2015/01/15/%E3%80%90C%E8%A8%80%E8%AA%9E%E3%80%91%E5%8F%AF%E5%A4%89%E5%BC%95%E6%95%B0%E3%81%A7%E3%83%89%E3%83%83%E3%83%88%EF%BC%93%E3%81%A4%E3%81%A7%E5%BC%95%E6%95%B0%E3%82%92%E5%8F%97%E3%81%91%E5%8F%96%E3%82%8B %
+%https://www.nomunomu0504.work/entry/2018/11/15/162218 %
   \subsubsection{作成したプログラム}
 
   \subsubsection{考察}
