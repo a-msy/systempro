@@ -210,8 +210,9 @@ $ spim-gcc file.c
     78	        addu  $sp, $sp, 24
     79	        j     $ra
 \end{verbatim}
-
-  \subsubsection{考察}
+\subsubsection{ハノイの塔について}
+ハノイの塔とは
+  \subsubsection{プログラムの説明及び作成時の考察}
 作成は，手続き呼出し規約に基づいて，各ルーチンごとにスタックポインタをルーチンの開始時に確保し，終了時に破棄して呼び出された関数に戻る設計にしている．\verb|syscall|でカーネルに所望することを\verb|$v0|レジスタへ格納し，\verb|syscall|を呼び出している．
 
 \verb|print_int|に対応する関数は，$4$行目から$13$行目に記載している．\verb|print_string|に対応する関数は，$15$行目から$24$行目に記載している．\verb|read_int|に対応する関数は，$26$行目から$35$行目に記載している．\verb|read_string|に対応する関数は，$37$行目から$46$行目に記載している．\verb|exit|に対応する関数は，$48$行目から$57$行目に記載している．\verb|print_char|に対応する関数は，$59$行目から$68$行目に記載している．\verb|read_char|に対応する関数は，$70$行目から$79$行目に記載している．
@@ -237,7 +238,7 @@ $ spim-gcc file.c
     38		sw	    $a3,36($fp)
     39		lw	    $v0,24($fp)
 \end{verbatim}
-31行目で，スタックを24バイト分確保していることが分かる．しかし，35行目から利用されているレジスタ\verb|$a0|~\verb|$a3|の4つは，確保したスタックよりも後方の\verb|_hanoi|を呼び出した側の関数が確保したスタックを使用している．表\ref{tab:stack}にスタックの様子を表に表してみる．
+31行目で，スタックを24バイト分確保していることが分かる．しかし，35行目から利用されているレジスタ\verb|$a0|~\verb|$a3|の4つは，確保したスタックよりも後方の\verb|_hanoi|を呼び出した側の関数が確保したスタックを使用している．ここで，新しく関数から呼び出された表\ref{tab:stack}にスタックの様子を表に表してみる．
 \begin{table}[htb]
 \label{tab:stack}
 \centering
@@ -367,7 +368,26 @@ compiled by GNU C version 2.96 20000731 (Red Hat Linux 7.3 2.96-113.2).
     85		.comm	_primes_stat,40
 \end{verbatim}
 
-  \subsubsection{考察}
+  \subsubsection{C言語から見たstaticとautoの違い}
+説明のために，以下に課題のCのソースコードを一部抜粋する．
+\begin{verbatim}
+     1	int primes_stat[10]; 
+     2	char * string_ptr   = "ABCDEFG";
+     3	char   string_ary[] = "ABCDEFG";
+     4	main()
+     5	{
+     6	int primes_auto[10];
+     7	primes_stat[0] = 2;
+     8	primes_auto[0] = 3;
+     9	print_var("primes_stat[0]", primes_stat[0]);
+    10	print_var("primes_auto[0]", primes_auto[0]);
+    11	}
+\end{verbatim}
+1行目の関数外で宣言されている変数は，static(静的)変数である．また，5行目の関数内で宣言されている変数は，auto(自動)変数であるという．以下にそれぞれの変数の特徴を示してみる．
+\begin{description}
+\item[static変数]プログラムの開始から終了まで，値を保持しつづける．
+\item[auto変数]関数の中で宣言され，その関数の実行開始時から 終了時までの間，その値を保持する．
+\end{description}
 まず，auto変数
 
 図や表をつくってみて比較して考察をしてみる。
@@ -395,6 +415,9 @@ static関数はプログラムの終わりまで存在するが、auto変数は�
 MIPSにおける可変引数の実現方法
 
 C言語との違い
+%http://totutotu.hatenablog.com/entry/2015/01/15/C%E3%81%A8%E3%82%A2%E3%82%BB%E3%83%B3%E3%83%96%E3%83%AA%E3%81%A7myprintf%28%29%E3%82%92%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B%E3%83%BC%E5%9C%9F%E5%8F%B0%E4%BD%9C%E3%82%8A%E7%B7%A8%E3%83%BC %
+%http://totutotu.hatenablog.com/entry/2015/01/15/%E3%80%90C%E8%A8%80%E8%AA%9E%E3%80%91%E5%8F%AF%E5%A4%89%E5%BC%95%E6%95%B0%E3%81%A7%E3%83%89%E3%83%83%E3%83%88%EF%BC%93%E3%81%A4%E3%81%A7%E5%BC%95%E6%95%B0%E3%82%92%E5%8F%97%E3%81%91%E5%8F%96%E3%82%8B %
+%https://www.nomunomu0504.work/entry/2018/11/15/162218 %
   \subsubsection{作成したプログラム}
 
   \subsubsection{考察}
