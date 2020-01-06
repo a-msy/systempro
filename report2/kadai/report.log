@@ -1,4 +1,4 @@
-This is e-pTeX, Version 3.14159265-p3.8.1-180226-2.6 (utf8.euc) (TeX Live 2018) (preloaded format=platex 2019.2.22)  23 DEC 2019 15:49
+This is e-pTeX, Version 3.14159265-p3.8.1-180226-2.6 (utf8.euc) (TeX Live 2018) (preloaded format=platex 2019.2.22)  6 JAN 2020 14:22
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -164,33 +164,33 @@ LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <10.95> not available
 
 ] [2] [3] [4]
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 217.
- [5] [6]
-Overfull \hbox (21.89697pt too wide) in paragraph at lines 285--285
+(Font)              <10.95> on input line 218.
+ [5] [6] [7]
+Overfull \hbox (21.89697pt too wide) in paragraph at lines 286--286
 []     \OT1/cmtt/m/n/10.95 4  # GNU C version 2.96 20000731 (Red Hat Linux 7.3 
 2.96-113.2) (mipsel-linux)[] 
  []
 
-[7]
-Overfull \hbox (4.65091pt too wide) in paragraph at lines 291--291
+
+Overfull \hbox (4.65091pt too wide) in paragraph at lines 292--292
 []     \OT1/cmtt/m/n/10.95 9  # -fpcc-struct-return -fsched-interblock -fsched-
 spec -fbranch-count-reg[] 
  []
 
 
-Overfull \hbox (10.3996pt too wide) in paragraph at lines 293--293
+Overfull \hbox (10.3996pt too wide) in paragraph at lines 294--294
 []    \OT1/cmtt/m/n/10.95 11  # -fgnu-linker -fargument-alias -fleading-undersc
 ore -fident -fmath-errno[] 
  []
 
-[8] [9] [10] (./report.aux) ) 
+[8] [9] [10] [11] (./report.aux) ) 
 Here is how much of TeX's memory you used:
- 946 strings out of 494703
- 12682 string characters out of 6180181
- 89080 words of memory out of 5000000
- 4845 multiletter control sequences out of 15000+600000
+ 947 strings out of 494703
+ 12699 string characters out of 6180181
+ 89092 words of memory out of 5000000
+ 4846 multiletter control sequences out of 15000+600000
  15809 words of font info for 62 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  23i,8n,20p,521b,393s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on report.dvi (10 pages, 23756 bytes).
+Output written on report.dvi (11 pages, 25704 bytes).
