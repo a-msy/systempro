@@ -30,7 +30,7 @@
 
 なお、与えられた課題内容を以下に述べる．
 
-\subsection{課題内容}\label{kadai}
+\subsection{課題内容}\label{sec:kadai}
 以下の課題についてレポートをする． プログラムは，MIPSアセンブリ言語及びC言語で記述し，SPIMを用いて動作を確認している．
 \begin{description}
 
@@ -278,7 +278,7 @@ MIPSのコンパイラは,1つ目の引数は\verb|$a0|に,2つ目の引数は\v
 C言語との連携には，この規約を守る必要があるため， 最小のスタックフレームサイズは，24バイトとなっている．(引数1つ目〜4つ目(\verb|$a0|〜\verb|$a3|),\verb|$ra|,\verb|$fp|の6レジスタ*4バイト = 24バイト) 
  \subsection{2-3}
 以下に課題内容に対する考察を記載している．先に，auto変数とstatic変数の違いについて述べた後にポインタと配列の違いについてC言語とアセンブリの観点から述べる．
-  \subsubsection{report2-1.cのコンパイル結果}
+  \subsubsection{report2-1.cのコンパイル結果}\label{sec:2-1asem}
 \begin{verbatim}
      1		.file	1 "report2-1.c"
      2	
@@ -385,16 +385,26 @@ compiled by GNU C version 2.96 20000731 (Red Hat Linux 7.3 2.96-113.2).
 \end{verbatim}
 1行目の関数外で宣言されている変数は，static(静的)変数である．また，5行目の関数内で宣言されている変数は，auto(自動)変数であるという．以下にそれぞれの変数の特徴を示してみる．
 \begin{description}
-\item[static変数]プログラムの開始から終了まで，値を保持しつづける．
 \item[auto変数]関数の中で宣言され，その関数の実行開始時から 終了時までの間，その値を保持する．
+\item[static変数]プログラムの開始から終了まで，値を保持しつづける．
 \end{description}
-まず，auto変数
+両者の違いをアセンブラのソースコードを元に調べてみる．
+\subsubsection{auto変数}
+ソースコード内のauto変数である\verb|primes_auto|は\ref{sec:kadai}節の\verb|report2-1.c|には明らかに区別されて存在している．しかし，アセンブリのソース\ref{sec:2-1asem}節からは該当の部分を簡単に発見はできなかった．
+60行目にある文字列からラベル\verb|$LC4|が使われているところを辿ってみると，78行目において呼び出している\verb|_print_var|の第2引数の内容が\verb|primes_auto[0]|の値だと推測した．77行目の\verb|$a1|に入っている値すなわち，\verb|16($fp)|のことである．つまり，新\verb|$sp|\+$16$バイト目であり，スタック上に存在していることになる．
 
-図や表をつくってみて比較して考察をしてみる。
-自分で書いたCのプログラムとかで考察するのもよい。
-【autoとstaticの違い】
-１９行目確保したスタック上に存在している。スタックの絵を書いてみよう。
-static関数はプログラムの終わりまで存在するが、auto変数は該当の関数呼び出しが終わったら領域が開放されて値が使えなくなる。
+そして，82行目の操作によって，スタックを解放しているためこれ以降は値が使えなくなる．main関数における自動変数宣言はmain関数の終了とプログラムの終了がほぼ同じような意味を持つため，意識をする必要はないように思う．
+以下にスタックの様子を示す.
+\begin{table}[htb]
+\label{tab:stack2}
+\centering
+\begin{tabular}{|l|l|l|l|}
+\hline
+\end{tabular}
+\caption{スタックの様子}
+\end{table}
+
+\subsubsection{static変数}
 
 同じ名前の変数が用意された異なるファイルを2つ読み込むとどうなるのかについて調べてみる。
 
@@ -421,6 +431,7 @@ C言語との違い
   \subsubsection{作成したプログラム}
 
   \subsubsection{考察}
+\subsubsection{テスト結果・評価結果}
 
 \section{感想}
 
