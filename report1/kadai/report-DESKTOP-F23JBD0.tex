@@ -1,0 +1,266 @@
+%概要、課題について（課題ごとにサブセクション、課題内容コピペ）、
+\documentclass[a4j,11pt]{jarticle}
+\usepackage[top=25truemm,  bottom=30truemm,
+            left=25truemm, right=25truemm]{geometry}
+\usepackage{ascmac}
+\usepackage{verbatim}
+\usepackage{listings,jlisting}
+\lstset{%
+  language={},
+  basicstyle={\small},%
+  identifierstyle={\small},%
+  commentstyle={\small\itshape},%
+  keywordstyle={\small\bfseries},%
+  ndkeywordstyle={\small},%
+  stringstyle={\small\ttfamily},
+  frame={tb},
+  breaklines=true,
+  columns=[l]{fullflexible},%
+  numbers=left,%
+  xrightmargin=0zw,%
+  xleftmargin=3zw,%
+  numberstyle={\scriptsize},%
+  stepnumber=1,
+  numbersep=1zw,%
+  lineskip=-0.5ex%
+}
+\title{システムプログラミング１ \\
+       レポート}
+
+% ToDo: 自分自身の氏名と学生番号に書き換える
+\author{氏名: 今田　将也 (IMADA, Masaya) \\
+        学生番号: 09430509}
+
+% ToDo: 教員の指示に従って適切に書き換える
+\date{出題日: 2019年xx月xx日 \\
+      提出日: 20xx年xx月xx日 \\
+      締切日: 20xx年xx月xx日 \\}  % 注：最後の\\は不要に見えるが必要．
+
+\begin{document}
+\maketitle
+
+% 目次つきの表紙ページにする場合はコメントを外す
+%{\footnotesize \tableofcontents \newpage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{概要} \label{chap:abstract}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+本演習では，プログラミングに関する理解を深めるために不可欠なアセンブラとC言語の境界部分についての演習やMIPSアーキテクチャとアセンブリ言語，アセンブラ特有の記法．また，メモリや入出力，文字と文字列の扱い，レジスタやスタックを用いた手続き呼出の仕組みの演習を行った．具体的には，SPIMというMIPS　CPUシミュレータのハードウェア上にC言語とアセンブリ言語を仕様して文字の表示と入力のためのシステムコールライブラリを作成した．さらに，そのライブラリを使用して printf 及び gets 相当を今後C言語で作成する．本課題で実行した結果は，xspimというエミュレータのコンソール上の結果を表示している．
+
+なお、与えられた課題内容を以下に述べる．
+
+\subsection{課題内容}\label{kadai}
+以下の課題についてレポートをする． プログラムは，MIPSアセンブリ言語で記述し，SPIMを用いて動作を確認している．
+\begin{description}
+\item[課題1-1] 教科書A.8節 「入力と出力」に示されている方法と， A.9節 最後「システムコール」に示されている方法のそれぞれで "Hello World" を表示せよ．両者の方式を比較し考察せよ．
+\item[課題1-2]アセンブリ言語中で使用する .data， .text および .align とは何か解説せよ． 下記コード中の 6行目の .data がない場合，どうなるかについて考察せよ．
+\begin{verbatim}
+ 1:         .text
+ 2:         .align  2
+ 3: _print_message:
+ 4:         la      $a0, msg
+ 5:         li      $v0, 4
+ 6:         .data
+ 7:         .align  2
+ 8: msg:
+ 9:         .asciiz "Hello!!\n"
+10:         .text
+11:         syscall
+12:         j       $ra
+13: main:
+14:         subu    $sp, $sp, 24
+15:         sw      $ra, 16($sp)
+16:         jal     _print_message
+17:         lw      $ra, 16($sp)
+18:         addu    $sp, $sp, 24
+19:         j       $ra
+\end{verbatim}
+\item[課題1-3]教科書A.6節 「手続き呼出し規約」に従って，関数 fact を実装せよ． (以降の課題においては，この規約に全て従うこと) fact をC言語で記述した場合は，以下のようになるであろう． 
+\begin{verbatim}
+ 1: main()
+ 2: {
+ 3:   print_string("The factorial of 10 is ");
+ 4:   print_int(fact(10));
+ 5:   print_string("\n");
+ 6: }
+ 7: 
+ 8: int fact(int n)
+ 9: {
+10:   if (n < 1)
+11:     return 1;
+12:   else
+13:     return n * fact(n - 1);
+14: }
+\end{verbatim}
+\item[課題1-4]素数を最初から100番目まで求めて表示するMIPSのアセンブリ言語プログラムを作成してテストせよ． その際，素数を求めるために下記の2つのルーチンを作成すること．
+
+  \begin{table}[h]
+    \begin{tabular}{|l|l|}
+      \hline
+      \multicolumn{1}{|c|}{関数名} & \multicolumn{1}{c|}{概要} \\ \hline
+      test\_prime(n)            & nが素数なら1，そうでなければ0を返す     \\ \hline
+      main()                    & 整数を順々に素数判定し，100個プリント    \\ \hline
+    \end{tabular}
+  \end{table}
+C言語で記述したプログラム例: 
+\begin{verbatim}
+ 1: int test_prime(int n)
+ 2: {
+ 3:   int i;
+ 4:   for (i = 2; i < n; i++){
+ 5:     if (n % i == 0)
+ 6:       return 0;
+ 7:   }
+ 8:   return 1;
+ 9: }
+10: 
+11: int main()
+12: {
+13:   int match = 0, n = 2;
+14:   while (match < 100){
+15:     if (test_prime(n) == 1){
+16:       print_int(n);
+17:       print_string(" ");
+18:       match++;
+19:     }
+20:     n++;
+21:   }
+22:   print_string("\n");
+23: }
+\end{verbatim}
+実行結果（行を適当に折り返している）：
+\begin{verbatim}
+  2   3   5   7  11  13  17  19  23  29
+ 31  37  41  43  47  53  59  61  67  71
+ 73  79  83  89  97 101 103 107 109 113
+127 131 137 139 149 151 157 163 167 173
+179 181 191 193 197 199 211 223 227 229
+233 239 241 251 257 263 269 271 277 281
+283 293 307 311 313 317 331 337 347 349
+353 359 367 373 379 383 389 397 401 409
+419 421 431 433 439 443 449 457 461 463
+467 479 487 491 499 503 509 521 523 541
+\end{verbatim}
+
+\item[課題1-5]素数を最初から100番目まで求めて表示するMIPSのアセンブリ言語プログラムを作成してテストせよ． ただし，配列に実行結果を保存するように main 部分を改造し， ユーザの入力によって任意の番目の配列要素を表示可能にせよ． 
+
+C言語で記述したプログラム例：
+\begin{verbatim}
+ 1: int primes[100];
+ 2: int main()
+ 3: {
+ 4:   int match = 0, n = 2;
+ 5:   while (match < 100){
+ 6:     if (test_prime(n) == 1){
+ 7:       primes[match++] = n;
+ 8:     }
+ 9:     n++;
+10:   }
+11:   for (;;){
+12:     print_string("> ");
+13:     print_int(primes[read_int() - 1]);
+14:     print_string("\n");
+15:   }
+16: }
+\end{verbatim}
+実行例：
+\begin{verbatim}
+> 15
+47
+> 100
+541
+\end{verbatim}
+\end{description}
+
+\subsection{xspimの実行方法}
+\begin{verbatim}
+xspim -mapped_io&
+\end{verbatim}
+でコンソール上で実行後，必要なアセンブリファイルをloadし，runすることで実行した．
+\section{課題レポート}
+
+ \subsection{課題1-1}
+
+  \subsubsection{作成したプログラム}
+
+    \lstinputlisting[caption=A.8節「入力と出力」に示されている方法,label=program1]{k1-2.s}
+    \lstinputlisting[caption= A.9節「システムコール」に示されている方法,label=program2]{k1.s}
+
+  \subsubsection{考察}
+  
+  前者での文字の出力は，野蛮な方法である．計算機ごとに変り得るアドレスの0xffff000cを意識しつつ使うのは面倒であり，アドレスを知る術がない場合実装するのが不可能である．また，仮に他のプログラムも同時に印刷しようとした場合に競合が発生する可能性もある．このプログラムは印刷が可能になるまで待機してから印刷を行っているが，待たずに印刷するようなプログラムを作成した場合，機器の破壊につながることもあるだろう．
+
+それに比べて，システムコールはカーネルごとに引数の意味が異なって，そのアドレスが変化したとしてもプログラムを変更する必要がなく，他のプログラムとの競合も調整してもらえるため，安全にプログラムを走行することができる．システムコール命令を用いることで安全にユーザプログラムからカーネルやメモリ資源を保護することができ、カーネルに所望の処理を依頼することができる．
+
+ \subsection{課題1-2}
+\subsubsection{実行結果}
+  \begin{screen}
+    課題のコードの実行結果
+    \end{screen}
+    \begin{verbatim}
+Hello!!
+    \end{verbatim}
+  \begin{screen}
+    6行目の.dataをコメントアウトした場合の場合の実行結果
+    \end{screen}
+    \begin{verbatim}
+X\200}B
+    \end{verbatim}
+  \subsubsection{考察}
+  まず，.data，.textとはメモリ中のどこにデータやテキストを配置するかを制御するためのアセンブラ指令である．本講義で使用したSPIMはテキストとデータのセグメントを分割してメモリ中に並べていくようになっている．しかし，テキストとデータは最終的にどちらも数値であるため，どちらをどこに配置するかアセンブラでは決定できず，プログラマ側で指定する必要がある．また，テキストは通常書き換わることはないのでデータと違って読み込み専用のメモリ上に配置することができる．また，異なるプロセスで同じプログラムを実行する場合でもテキストは同一なので共有することも可能になる．このように，データとテキストを意識して区別することで効率的にプロセスを実行できる．
+
+  課題中の6行目の$.data$がない場合，xspimでloadを実行した時点で，.asciizの\verb|"Hello!!\n"|がデータセグメントであるため，テキストセグメントに配置することができないというエラー表示が出る．そして，実行すると\verb|X\200}B|と表示された．もう一度実行すると，\verb|@\207Y^B|と異なった表示がされた．.dataがなくなったことで，\$a0レジスタにmsgの示すアドレスの先に\verb|"Hello!!\n"|ではないデータが存在するようになり，印刷する際にそこのアドレスの内容を表示していると考えられる．その内容は実行ごとに変わるため，表示結果も変わっていると考える．
+ \subsection{課題1-3}
+  \subsubsection{実装内容}
+  プログラムは大きく分けて，mainとfact部に分かれる．main部では，まず手続き呼出規約に従ってスタックを確保した．そして課題のフローに従って，引数を設定しfactを実行後，結果をシステムコールにて印刷し各種のアドレスを復元し，スタックポインタをポップし，プログラムを終了する．fact部では，まずmain部同様に手続き呼出規約に従ってスタックを確保し，再帰的に引数を渡すことが出きるように確保した．引数が$0$より大きいなら再帰処理のfactsubにjal命令を実行，$0$以下なら$1$を返し，一つ前のfactルーチンを呼出し、その計算結果に引数をかけていくという処理を再帰的に繰り返した．factルーチン終了後は戻りアドレスを復元し，スタックポインタをポップする処理を行いルーチンを終了させている．
+
+  \subsubsection{作成したプログラム}
+  \lstinputlisting[caption=10の階乗を再帰的に求めるプログラム,label=programfact]{fact.s}
+  \subsubsection{実行テスト結果}
+\begin{verbatim}
+$ xspim -mapped_io&
+The factorial of 10 is 3628800
+\end{verbatim}
+
+ \subsection{課題1-4}
+  \subsubsection{実装内容}
+  \subsubsection{作成したプログラム}
+   \lstinputlisting[caption=素数を100個表示するプログラム,label=programsosu]{sosu1.s}
+   \subsubsection{実行テスト結果}
+   \begin{verbatim}
+$ xspim -mapped_io&
+2 3 5 7 11 13 17 19 23 29 
+31 37 41 43 47 53 59 61 67 71 
+73 79 83 89 97 101 103 107 109 113 
+127 131 137 139 149 151 157 163 167 173 
+179 181 191 193 197 199 211 223 227 229 
+233 239 241 251 257 263 269 271 277 281 
+283 293 307 311 313 317 331 337 347 349 
+353 359 367 373 379 383 389 397 401 409 
+419 421 431 433 439 443 449 457 461 463 
+467 479 487 491 499 503 509 521 523 541 
+   \end{verbatim}
+
+ \subsection{課題1-5}
+  \subsubsection{実装内容}
+  \subsubsection{作成したプログラム}
+   \lstinputlisting[caption=配列で入力に応じて素数を表示するプログラム,label=programsosu2]{sosu2.s}
+   \subsubsection{実行テスト結果}
+   \begin{verbatim}
+$ xspim -mapped_io&
+To quit, type 0
+> 100
+541
+> 14
+43
+> -1000
+Please type correct number
+> 199
+Please type correct number
+> 0
+Good bye :)
+   \end{verbatim}
+
+\section{感想}
+\end{document}
