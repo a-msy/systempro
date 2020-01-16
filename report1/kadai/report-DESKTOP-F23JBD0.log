@@ -1,0 +1,128 @@
+This is e-pTeX, Version 3.14159265-p3.8.2-190131-2.6 (utf8.sjis) (TeX Live 2019/W32TeX) (preloaded format=platex 2019.6.4)  20 NOV 2019 09:44
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**"c:/Users/muram/OneDrive - 岡山大学/2年次/3学期/systempro/report1/kadai/report"
+(c:/Users/muram/OneDrive - 岡山大学/2年次/3学期/systempro/report1/kadai/report.tex
+pLaTeX2e <2019-04-06> (based on LaTeX2e <2018-12-01>)
+(c:/w32tex/share/texmf-dist/tex/platex/base/jarticle.cls
+Document Class: jarticle 2019/04/02 v1.8b Standard pLaTeX class
+\c@@paper=\count83
+(c:/w32tex/share/texmf-dist/tex/platex/base/jsize11.clo
+File: jsize11.clo 2019/04/02 v1.8b Standard pLaTeX file (size option)
+)
+\c@part=\count84
+\c@section=\count85
+\c@subsection=\count86
+\c@subsubsection=\count87
+\c@paragraph=\count88
+\c@subparagraph=\count89
+\c@figure=\count90
+\c@table=\count91
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\symmincho=\mathgroup4
+LaTeX Font Info:    Overwriting symbol font `mincho' in version `bold'
+(Font)                  JY1/mc/m/n --> JY1/gt/m/n on input line 614.
+\toclineskip=\dimen118
+\@lnumwidth=\dimen119
+\bibindent=\dimen120
+\heisei=\count92
+) (c:/w32tex/share/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2018/04/16 v5.8 Page Geometry
+ (c:/w32tex/share/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks15
+) (c:/w32tex/share/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2018/09/07 v3.3 Provides the ifpdf switch
+) (c:/w32tex/share/texmf-dist/tex/generic/oberdiek/ifvtex.sty
+Package: ifvtex 2016/05/16 v1.6 Detect VTeX and its facilities (HO)
+Package ifvtex Info: VTeX not detected.
+) (c:/w32tex/share/texmf-dist/tex/generic/ifxetex/ifxetex.sty
+Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
+)
+\Gm@cnth=\count93
+\Gm@cntv=\count94
+\c@Gm@tempcnt=\count95
+\Gm@bindingoffset=\dimen121
+\Gm@wd@mp=\dimen122
+\Gm@odd@mp=\dimen123
+\Gm@even@mp=\dimen124
+\Gm@layoutwidth=\dimen125
+\Gm@layoutheight=\dimen126
+\Gm@layouthoffset=\dimen127
+\Gm@layoutvoffset=\dimen128
+\Gm@dimlist=\toks16
+ (c:/w32tex/share/texmf-dist/tex/latex/geometry/geometry.cfg)) (c:/w32tex/share/texmf-dist/tex/latex/ascmac/ascmac.sty
+Package: ascmac 2018/03/09 v2.0h ascmac wrapper (community edition) 
+ (c:/w32tex/share/texmf-dist/tex/latex/ascmac/tascmac.sty
+Package: tascmac 2018/03/09 v2.0h ascmac package (community edition) 
+\@savetbaselineshift=\dimen129
+\@saveybaselineshift=\dimen130
+\scb@x=\box43
+\scscb@x=\box44
+\@bw=\dimen131
+\@nbox=\box45
+\@nbody=\box46
+\@scw=\dimen132
+\ascmac@hoboxa=\box47
+\ascmac@hoboxb=\box48
+\@itemh=\dimen133
+\@iboxpos=\toks17
+\@iboxstr=\box49
+\@bwsp=\box50
+\@@bwsp=\box51
+\@bcal=\count96
+\shaderule=\dimen134
+)) (c:/w32tex/share/texmf-dist/tex/latex/tools/verbatim.sty
+Package: verbatim 2014/10/28 v1.5q LaTeX2e package for verbatim enhancements
+\every@verbatim=\toks18
+\verbatim@line=\toks19
+\verbatim@in@stream=\read1
+) (c:/w32tex/share/texmf-dist/tex/latex/listings/listings.sty
+\lst@mode=\count97
+\lst@gtempboxa=\box52
+\lst@token=\toks20
+\lst@length=\count98
+\lst@currlwidth=\dimen135
+\lst@column=\count99
+\lst@pos=\count100
+\lst@lostspace=\dimen136
+\lst@width=\dimen137
+\lst@newlines=\count101
+\lst@lineno=\count102
+\lst@maxwidth=\dimen138
+ (c:/w32tex/share/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2019/02/27 1.8b (Carsten Heinz)
+\c@lstnumber=\count103
+\lst@skipnumbers=\count104
+\lst@framebox=\box53
+) (c:/w32tex/share/texmf-dist/tex/latex/listings/listings.cfg
+File: listings.cfg 2019/02/27 1.8b listings configuration
+))
+Package: listings 2019/02/27 1.8b (Carsten Heinz)
+
+
+! LaTeX Error: File `jlisting.sty' not found.
+
+Type X to quit or <RETURN> to proceed,
+or enter new name. (Default extension: sty)
+
+Enter file name: 
+! Emergency stop.
+<read *> 
+         
+l.8 \lstset
+           {%^^M
+End of file on the terminal!
+
+ 
+Here is how much of TeX's memory you used:
+ 2074 strings out of 493216
+ 29623 string characters out of 6145931
+ 101726 words of memory out of 5000000
+ 6111 multiletter control sequences out of 15000+600000
+ 8370 words of font info for 35 fonts, out of 8000000 for 9000
+ 929 hyphenation exceptions out of 8191
+ 26i,0n,32p,231b,217s stack positions out of 5000i,500n,10000p,500000b,80000s
+No pages of output.

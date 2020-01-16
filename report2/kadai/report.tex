@@ -1,6 +1,5 @@
 \documentclass[a4j,11pt]{jarticle}
-\usepackage[top=25truemm,  bottom=30truemm,
-            left=25truemm, right=25truemm]{geometry}
+\usepackage[top=25truemm,  bottom=30truemm,left=25truemm, right=25truemm]{geometry}
 \usepackage{ascmac}
 \usepackage{verbatim}
 \title{システムプログラミング１ \\
@@ -221,7 +220,6 @@ $ spim-gcc file.c
   
 作成したプログラム中のラベルの先頭にアンダーバーをつけているがこれは，本演習で用いたgccのルールでコンパイラに依存するものであるが，アセンブリ中で\verb|_function_name|と記述しておくと，C言語から\verb|function_name|で呼び出すことができるからである．
 
-
  \subsection{2-2}
 以下に課題内容に対する考察を記載する．
   \subsubsection{spim-gccの引数保存に関するスタックの利用方法}
@@ -391,23 +389,42 @@ compiled by GNU C version 2.96 20000731 (Red Hat Linux 7.3 2.96-113.2).
 両者の違いをアセンブラのソースコードを元に調べてみる．
 \subsubsection{auto変数}
 ソースコード内のauto変数である\verb|primes_auto|は\ref{sec:kadai}節の\verb|report2-1.c|には明らかに区別されて存在している．しかし，アセンブリのソース\ref{sec:2-1asem}節からは該当の部分を簡単に発見はできなかった．
-60行目にある文字列からラベル\verb|$LC4|が使われているところを辿ってみると，78行目において呼び出している\verb|_print_var|の第2引数の内容が\verb|primes_auto[0]|の値だと推測した．77行目の\verb|$a1|に入っている値すなわち，\verb|16($fp)|のことである．つまり，新\verb|$sp|\+$16$バイト目であり，スタック上に存在していることになる．
+60行目にある文字列からラベル\verb|$LC4|が使われているところを辿ってみると，78行目において呼び出している\verb|_print_var|の第2引数の内容が\verb|primes_auto[0]|の値だと推測した．77行目の\verb|$a1|に入っている値すなわち，\verb|16($fp)|のことである．つまり，新\verb|$sp+16|バイト目であり，スタック上に存在していることになる．
 
 そして，82行目の操作によって，スタックを解放しているためこれ以降は値が使えなくなる．main関数における自動変数宣言はmain関数の終了とプログラムの終了がほぼ同じような意味を持つため，意識をする必要はないように思う．
 以下にスタックの様子を示す.
 \begin{table}[htb]
-\label{tab:stack2}
-\centering
-\begin{tabular}{|l|l|l|l|}
-\hline
-\end{tabular}
-\caption{スタックの様子}
-\end{table}
+  \label{tab:stack2}
+  \centering
+  \begin{tabular}{|l|l|l|l|}
+  \hline
+  \$sp   & offsset & 内容           & 備考                    \\ \hline
+         & -16     & primes\_auto & 新\$sp + 16 バイト目       \\ \hline
+  ..     & ..      & ..           & ..                    \\ \hline
+  新\$sp→ & -04     & \$ra         & 戻りアドレス                \\ \hline
+  ..     & ..      & ..           & ..                    \\ \hline
+  旧\$sp→ & +00     & \$a0         & 第１引数                  \\ \hline
+         & +04     & \$a1         & primes\_auto{[}0{]}の値 \\ \hline
+  \end{tabular}
+  \caption{スタックの様子}
+  \end{table}
 
 \subsubsection{static変数}
+\verb|report2-1.c|をアセンブリに変えたコンパイル結果より，85行目にて以下の記述を見つけた．
+\begin{verbatim}
+  85		.comm	_primes_stat,40
+\end{verbatim}
+この宣言でデータセグメント内にデータを40バイト確保していた．これは，\verb|_primes_stat|のみ仕様されるもので，プログラムの開始から終了まで，値を保持しつづけるという性質を持つことになる．\verb|primes_stat|は常にその領域しか使用しないので，関数などが再帰的に呼び出された場合は，その領域を上書きすることがある.
 
+そのため，プログラムの開始から終了まで，値を保持しつづける一方で， 固定された領域(staticな領域)のみを使用するので， 再帰やスレッドによる並行処理では，上書きの危険があるといえる．
+
+\subsubsection{C言語におけるstaticというキーワード}
+C言語においてstaticという言葉は，2つの意味を持っていた．1つは，スタック上ではなく，プログラム中に静的に存在する領域にデータを確保するという意味である．もう1つは，staticを付けると変数が外部から参照できる範囲が変化するということである．具体的には，関数外でstaticを付けて宣言した変数は，外部のファイルからは参照できない．簡単にいうと，複数のC言語のファイルから構成されるプログラムにおいて，あるファイル内だけからしか参照できない変数を宣言できる．
+
+staticは，関数内でも有効に働くので，その場合は変数の有効範囲ではなく，記憶クラスを指定する．以下にその宣言と解釈した内容を表に示す．
+
+\subsubsection{autoとstaticのテスト}
 同じ名前の変数が用意された異なるファイルを2つ読み込むとどうなるのかについて調べてみる。
-
 
 【ポインタと配列の違い】
 
@@ -431,7 +448,7 @@ C言語との違い
   \subsubsection{作成したプログラム}
 
   \subsubsection{考察}
-\subsubsection{テスト結果・評価結果}
+  \subsubsection{テスト結果・評価結果}
 
 \section{感想}
 
