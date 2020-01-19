@@ -557,16 +557,56 @@ pointer[2] = c
   となる
   \subsection{MIPSにおける可変引数の実現方法}
   GCCでどのようにコンパイルされているかマクロを用いてMIPSで調査を行った．
+  \subsubsection{作成したプログラムの概要}
+  関数\verb|sum()|は，可変長引数でint型の値を読み込み，その総合計を算出するプログラムで，入力値が0ならば終了する．
+  関数\verb|call_sum()|は，配列の要素を関数\verb|sum()|に渡すための関数である．ここでは10個の配列の値を渡す．
+  \subsubsection{作成したプログラム}
+  \begin{verbatim}
+  1  #include <stdarg.h>
+  2
+  3  int sum(int nfirst, ...)
+  4  {
+  5    int r = 0, n;
+  6    va_list args;
+  7
+  8    va_start(args, nfirst);
+  9    for (n = nfirst; n != 0; n = va_arg(args, int)) r += n;
+ 10    va_end(args);
+ 11
+ 12    return r;
+ 13  }
+ 14
+ 15  int call_sum(int a[10])
+ 16  {
+ 17    return sum(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9]);
+ 18  }
+  \end{verbatim}
+  \subsubsection{MIPSへのコンパイル結果}
+  \subsubsection{考察}
+  \begin{verbatim}
+    まず、MIPSは引数用に利用できるレジスタがa0からa3までの4つなので、
+    a1からa3をスタックに貯める。さらに、そこからスタックの先には4番目
+    の引数以降が格納されている前提となる。 
+    一つずつロードしてき、インデックスを4ずらしていく。
+    ロードしたデータを加算しては、0判定をしてループ脱出を決めるという
+    具合だ。
+
+    sumfが呼び出されてからspが-8されるため、sumfの中では、
+    4番目以降の引数は、
+v0: 16+8 = 24
+v1: 20+8 = 28 ...
+となり、第一引数から第8引数が12,16,20となっているのに、
+アドレス的に続いていることが確認できた。
+  \end{verbatim}
 
  \section{2-5}
 
 %http://totutotu.hatenablog.com/entry/2015/01/15/C%E3%81%A8%E3%82%A2%E3%82%BB%E3%83%B3%E3%83%96%E3%83%AA%E3%81%A7myprintf%28%29%E3%82%92%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B%E3%83%BC%E5%9C%9F%E5%8F%B0%E4%BD%9C%E3%82%8A%E7%B7%A8%E3%83%BC %
 %http://totutotu.hatenablog.com/entry/2015/01/15/%E3%80%90C%E8%A8%80%E8%AA%9E%E3%80%91%E5%8F%AF%E5%A4%89%E5%BC%95%E6%95%B0%E3%81%A7%E3%83%89%E3%83%83%E3%83%88%EF%BC%93%E3%81%A4%E3%81%A7%E5%BC%95%E6%95%B0%E3%82%92%E5%8F%97%E3%81%91%E5%8F%96%E3%82%8B %
-%https://www.nomunomu0504.work/entry/2018/11/15/162218 %
-  \subsubsection{作成したプログラム}
-
-  \subsubsection{考察}
-  \subsubsection{テスト結果・評価結果}
+%http://www.darkhorse.mydns.jp/blog/printf %
+  \subsection{作成したプログラム}
+  \subsection{考察}
+  \subsection{テスト結果・評価結果}
 
 \section{感想}
 
