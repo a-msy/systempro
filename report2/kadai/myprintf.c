@@ -33,7 +33,7 @@ void radix_sprint(char *s, unsigned int n, int base)
 
   do {
     *s++ = "0123456789ABCDEF"[n % base];
-    n /= base;
+    n = n / base;
   } while (n > 0);
 
   *s-- = '\0';  
