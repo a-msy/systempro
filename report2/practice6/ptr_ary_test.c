@@ -1,7 +1,7 @@
 #include<stdio.h>
 
 int main(void){
-    char array[3] ='abc';
+    char array[3] ="abc";
     char *pointer;
 
     pointer = array;
