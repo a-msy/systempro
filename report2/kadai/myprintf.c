@@ -1,11 +1,11 @@
 #define ROUNDUP_SIZEOF(x) (((sizeof(x)+3)/4)*4)
 
-#define ZERO_PADDING         (1<<1)//000001 シフト演算
-#define ALTERNATIVE          (1<<2)//000010
-#define THOUSAND_GROUP       (1<<3)//000100
-#define CAPITAL_LETTER       (1<<4)//001000
-#define WITH_SIGN_CHAR       (1<<5)//010000
-#define LEFT_JUSTIFIED       (1<<6)//100000
+#define fill_zero         (1<<1)//000001 シフト演算
+#define alternative          (1<<2)//000010
+#define three_div       (1<<3)//000100
+#define capital       (1<<4)//001000
+#define with_sign       (1<<5)//010000
+#define left_start       (1<<6)//100000
 
 #define _isnumc(x) ( (x) >= '0' && (x) <= '9' )
 #define _ctoi(x)   ( (x) -  '0' )//0という文字を基準として引き算すれば数字文字を示す数値になる
@@ -21,7 +21,7 @@ int my_strlen(char* str){
 }
 
 char * mystrchr(const char *s, int c)
-{//対応する文字を検索する
+{//*sに対応する文字を検索する　ｃは数値で持ってくる．そのほうができた．
     char ch = (char) c;
     while (*s) {
         if (*s == ch)
@@ -50,19 +50,19 @@ void put_int(int n, int base, int length, char sign, int flags){
     int pad = ' ';
     char *symbols = symbols_s;
 
-    if(flags & CAPITAL_LETTER){
+    if(flags & capital){
         symbols = symbols_c;
     }
 
     do {
         buf[i++] = symbols[n % base];
-        if( (flags & THOUSAND_GROUP) && (i%4)==3) buf[i++] = ',';
+        if( (flags & three_div) && (i%4)==3) buf[i++] = ',';
     } while (n /= base);
 
     length = length - i;
 
-    if (!(flags & LEFT_JUSTIFIED)) {
-        if(flags & ZERO_PADDING){
+    if (!(flags & left_start)) {
+        if(flags & fill_zero){
             pad = '0';
         }
         while (length > 0) { 
@@ -75,7 +75,7 @@ void put_int(int n, int base, int length, char sign, int flags){
         buf[i++] = sign;
     }
     
-    if (flags & ALTERNATIVE){
+    if (flags & alternative){
         if (base == 8){
             buf[i++] = '0';
         }
@@ -116,23 +116,23 @@ void myprintf(char *fmt, ...){
             while (mystrchr("'-+ #0", *fmt)) {
                 switch (*fmt) {
                 case '\'': 
-                    flags |= THOUSAND_GROUP;             
+                    flags |= three_div;             
                     break;
                 case  '-': 
-                    flags |= LEFT_JUSTIFIED;             
+                    flags |= left_start;             
                     break;
                 case  '+': 
-                    flags |= WITH_SIGN_CHAR; 
+                    flags |= with_sign; 
                     sign = '+'; 
                     break;
                 case  '#': 
-                    flags |= ALTERNATIVE;                
+                    flags |= alternative;                
                     break;
                 case  '0': 
-                    flags |= ZERO_PADDING;               
+                    flags |= fill_zero;               
                     break;
                 case  ' ': 
-                    flags |= WITH_SIGN_CHAR; 
+                    flags |= with_sign; 
                     sign = ' '; 
                     break;
                 }
@@ -178,7 +178,7 @@ void myprintf(char *fmt, ...){
                     tmp = precision;
                 }
                 length = length - tmp;
-                if (!(flags & LEFT_JUSTIFIED)){   
+                if (!(flags & left_start)){   
                     while ( length > 0 ){
                         length--;
                         print_char(' ');
@@ -202,7 +202,7 @@ void myprintf(char *fmt, ...){
                 print_char('%');
                 break;
             case 'X':
-                flags |= CAPITAL_LETTER;
+                flags |= capital;
             case 'x':
                 put_int(*(int*)p,16,length,sign,flags);
                 p= p + ROUNDUP_SIZEOF(int);
