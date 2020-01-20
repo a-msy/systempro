@@ -32,7 +32,7 @@ void radix_sprint(char *s, unsigned int n, int base)
   char *h = s;
 
   do {
-    *s++ = "0123456789ABCDEF"[n % base];
+    *s++ = "0123456789ABCDEF"[n % base];//"文字列"という配列の[何番目]か
     n = n / base;
   } while (n > 0);
 
@@ -42,7 +42,7 @@ void radix_sprint(char *s, unsigned int n, int base)
 
   /* reverse string */
   while (h < s){
-    swap_char_at(h++, s--);
+    swap_char_at(h++, s--);//逆順に入っているから転置
   }
 }
 
@@ -67,7 +67,7 @@ void myprintf(char *fmt, ...){
 	                p = p + ROUNDUP_SIZEOF(char);
                     break;
                 case '%':
-                    print_char(*(char*)p);
+                  print_char(*(char*)p);
 	                p = p + ROUNDUP_SIZEOF(char);
                     break;
             }
@@ -81,7 +81,7 @@ void myprintf(char *fmt, ...){
 
 int main()
 {
-  myprintf("TEST %d is %c %s ...\n", 99, 'x', "OK");
-  print_string("All done\n");
+  myprintf("TEST %d is %c %s ...%%s\n", 99, 'x', "OK");
+  myprintf("All done\n");
   return 0;
 }
