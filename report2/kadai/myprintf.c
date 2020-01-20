@@ -1,14 +1,24 @@
 #define ROUNDUP_SIZEOF(x) (((sizeof(x)+3)/4)*4)
 
-#define    ZERO_PADDING         (1<<1)//000001
-#define    ALTERNATIVE          (1<<2)//000010
-#define    THOUSAND_GROUP       (1<<3)//000100
-#define    CAPITAL_LETTER       (1<<4)//001000
-#define    WITH_SIGN_CHAR       (1<<5)//010000
-#define    LEFT_JUSTIFIED       (1<<6)//100000
+#define ZERO_PADDING         (1<<1)//000001 シフト演算
+#define ALTERNATIVE          (1<<2)//000010
+#define THOUSAND_GROUP       (1<<3)//000100
+#define CAPITAL_LETTER       (1<<4)//001000
+#define WITH_SIGN_CHAR       (1<<5)//010000
+#define LEFT_JUSTIFIED       (1<<6)//100000
 
 #define _isnumc(x) ( (x) >= '0' && (x) <= '9' )
-#define _ctoi(x)   ( (x) -  '0' )
+#define _ctoi(x)   ( (x) -  '0' )//0という文字を基準として引き算すれば数字文字を示す数値になる
+
+int my_strlen(char* str){
+    int length = 0; //文字列の長さを入れる箱
+ 
+   //文字列の長さを数える
+    while(*str++ != '\0'){
+        length++;
+    }
+    return length;
+}
 
 char * mystrchr(const char *s, int c)
 {//対応する文字を検索する
@@ -87,28 +97,44 @@ void put_int(int n, int base, int length, char sign, int flags){
 }
 
 void myprintf(char *fmt, ...){
-    int flags = 0;
-    int length = 0;
-    int precision = 0;
-    int tmp = 0;
-    char sign = '\0';
     //第２引数以降を格納するために利用する。
     //fmtのアドレスにfmtのサイズ分追加する。charとして扱うためにキャスト。なくてもうごいた
     char *p = ((char*)&fmt)+ROUNDUP_SIZEOF(fmt);
 
     while(*fmt){
 
+        int flags = 0;
+        int length = 0;
+        int precision = 0;
+        int tmp = 0;
+        char sign = '\0';
+        char *s = '\0';
+
         if(*fmt == '%'){
-            fmt++;
+            fmt++;//次を見る
 
             while (mystrchr("'-+ #0", *fmt)) {
                 switch (*fmt) {
-                case '\'': flags |= THOUSAND_GROUP;             break;
-                case  '-': flags |= LEFT_JUSTIFIED;             break;
-                case  '+': flags |= WITH_SIGN_CHAR; sign = '+'; break;
-                case  '#': flags |= ALTERNATIVE;                break;
-                case  '0': flags |= ZERO_PADDING;               break;
-                case  ' ': flags |= WITH_SIGN_CHAR; sign = ' '; break;
+                case '\'': 
+                    flags |= THOUSAND_GROUP;             
+                    break;
+                case  '-': 
+                    flags |= LEFT_JUSTIFIED;             
+                    break;
+                case  '+': 
+                    flags |= WITH_SIGN_CHAR; 
+                    sign = '+'; 
+                    break;
+                case  '#': 
+                    flags |= ALTERNATIVE;                
+                    break;
+                case  '0': 
+                    flags |= ZERO_PADDING;               
+                    break;
+                case  ' ': 
+                    flags |= WITH_SIGN_CHAR; 
+                    sign = ' '; 
+                    break;
                 }
                 fmt++;
             }
@@ -118,35 +144,55 @@ void myprintf(char *fmt, ...){
             }
 
             if (*fmt == '.'){
-
-                fmt++;
-
-                if (*fmt == '*'){
-                    fmt++; 
+                fmt++;//次の数字を見る
+                if (*fmt == '*'){//ワイルドカードでの文字列検索
+                    fmt++;
                     precision = *(int*)p;
                 }
-
                 else { 
-
                     while (_isnumc(*fmt) ){
                         precision = precision * 10 + _ctoi(*fmt++);
                     }
                 }
             }
-            
+
             switch(*fmt){
             case 'd':
+            case 'i':
                 //print_int(*(int*)p);//pの中身の値をintとしてキャストし表示する
-                if(*(int*)p < 0){
-                    *(int*)p *= -1;
-                    sign = '-';
+                 if(*(int*)p < 0){
+                     *(int*)p *= -1;//そのままマイナスだと表示されない
+                  sign = '-';
                 }
                 put_int(*(int*)p,10,length,sign,flags);
                 p = p + ROUNDUP_SIZEOF(int);
                 break;
             case 's':
-                print_string(*(char**)p);
+                //print_string(*(char**)p);
+                s = *(char**)p;
+                if(s == '\0'){
+                    s = "(null)";
+                }
+                tmp = my_strlen(s);
+                if (precision && precision < tmp){
+                    tmp = precision;
+                }
+                length = length - tmp;
+                if (!(flags & LEFT_JUSTIFIED)){   
+                    while ( length > 0 ){
+                        length--;
+                        print_char(' ');
+                    } 
+                }
+                while (tmp--){
+                    print_char(*s++);
+                }
+                while (length > 0){
+                    length--;
+                    print_char(' ');
+                }
                 p = p + ROUNDUP_SIZEOF(char*);
+
                 break;
             case 'c':
                 print_char(*(char*)p);
@@ -156,6 +202,8 @@ void myprintf(char *fmt, ...){
                 print_char('%');
                 p = p + ROUNDUP_SIZEOF(char);
                 break;
+            case 'X':
+                flags |= CAPITAL_LETTER;
             case 'x':
                 put_int(*(int*)p,16,length,sign,flags);
                 p= p + ROUNDUP_SIZEOF(int);
@@ -176,8 +224,10 @@ void myprintf(char *fmt, ...){
 
 int main()
 {
-    myprintf("TEST %05d is %c %5s ...%%s\n", 999, 'x', "OK");
+    myprintf("TEST\n");
+    myprintf("%d %5d %-5d %d\n",100,100,100,-100);
     myprintf("16:%x\n",15);
+    myprintf("16:%X\n",15);
     myprintf("8:%o\n",15);
   return 0;
 }

@@ -60,15 +60,29 @@ void myvprintf(void (*__putc)(int), const char *fmt, va_list ap)
             }
         }
 
-        if(*fmt == '*'){ length = va_arg(ap,int); fmt++; }
-        else {  while( _isnumc(*fmt) ) length = (length*10)+_ctoi(*fmt++);  }
+        if(*fmt == '*'){ 
+            length = va_arg(ap,int); 
+            fmt++; 
+        }
+        else {  
+            while( _isnumc(*fmt) ){
+                length = (length*10)+_ctoi(*fmt++);
+            }  
+        }
 
 
         if (*fmt == '.')
         {
             fmt++;
-            if (*fmt == '*'){ fmt++; precision = va_arg(ap, int);}
-            else { while (_isnumc(*fmt) ) precision = precision * 10 + _ctoi(*fmt++); }
+            if (*fmt == '*'){ 
+                fmt++; 
+                precision = va_arg(ap, int);
+            }
+            else { 
+                while (_isnumc(*fmt) ){
+                    precision = precision * 10 + _ctoi(*fmt++);
+                } 
+            }
         }
 
         while (mystrchr("hljzt", *fmt)) {
