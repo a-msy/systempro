@@ -667,9 +667,6 @@ $L81:
 $L82:
 	li	$a0,37			# 0x25
 	jal	_print_char
-	lw	$v0,24($fp)
-	addu	$v0,$v0,4
-	sw	$v0,24($fp)
 	j	$L91
 $L83:
 	lw	$v0,28($fp)
@@ -720,16 +717,30 @@ $L38:
 	.rdata
 	.align	2
 $LC4:
-	.asciiz	"TEST %5d is %c %5.2s ...%%s\n"
+	.asciiz	"TEST\n"
 	.align	2
 $LC5:
-	.asciiz	"OKK"
+	.ascii	"%%d:%d\n"
+	.ascii	"%%5d:%5d\n"
+	.asciiz	"%%-5d:%-5d\n"
 	.align	2
 $LC6:
-	.asciiz	"16:%x\n"
+	.ascii	"%%x:%x\n"
+	.asciiz	"%%X:%X\n"
 	.align	2
 $LC7:
-	.asciiz	"8:%o\n"
+	.asciiz	"%%o:%o\n"
+	.align	2
+$LC8:
+	.ascii	"%%s:%s\n"
+	.ascii	"%%5s:%5s\n"
+	.asciiz	"%%5.2s:%5.2s\n"
+	.align	2
+$LC9:
+	.asciiz	"Say"
+	.align	2
+$LC10:
+	.asciiz	"%%c:%c\n"
 	.text
 	.align	2
 main:
@@ -738,15 +749,26 @@ main:
 	sw	$fp,16($sp)
 	move	$fp,$sp
 	la	$a0,$LC4
-	li	$a1,-999			# 0xfffffc19
-	li	$a2,120			# 0x78
-	la	$a3,$LC5
+	jal	_myprintf
+	la	$a0,$LC5
+	li	$a1,100			# 0x64
+	li	$a2,100			# 0x64
+	li	$a3,100			# 0x64
 	jal	_myprintf
 	la	$a0,$LC6
 	li	$a1,15			# 0xf
+	li	$a2,15			# 0xf
 	jal	_myprintf
 	la	$a0,$LC7
 	li	$a1,15			# 0xf
+	jal	_myprintf
+	la	$a0,$LC8
+	la	$a1,$LC9
+	la	$a2,$LC9
+	la	$a3,$LC9
+	jal	_myprintf
+	la	$a0,$LC10
+	li	$a1,97			# 0x61
 	jal	_myprintf
 	move	$v0,$zero
 	move	$sp,$fp

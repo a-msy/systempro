@@ -90,7 +90,7 @@ void put_int(int n, int base, int length, char sign, int flags){
     }
 
     while (length>0){
-        length--; 
+        length--;
         print_char(pad);
     }
 
@@ -139,7 +139,7 @@ void myprintf(char *fmt, ...){
                 fmt++;
             }
 
-            while( _isnumc(*fmt) ){
+            while( _isnumc(*fmt)){
                 length = (length*10)+_ctoi(*fmt++);
             }
 
@@ -200,7 +200,6 @@ void myprintf(char *fmt, ...){
                 break;
             case '%':
                 print_char('%');
-                p = p + ROUNDUP_SIZEOF(char);
                 break;
             case 'X':
                 flags |= CAPITAL_LETTER;
@@ -225,9 +224,10 @@ void myprintf(char *fmt, ...){
 int main()
 {
     myprintf("TEST\n");
-    myprintf("%d %5d %-5d %d\n",100,100,100,-100);
-    myprintf("16:%x\n",15);
-    myprintf("16:%X\n",15);
-    myprintf("8:%o\n",15);
-  return 0;
+    myprintf("%%d:%d\n%%5d:%5d\n%%-5d:%-5d\n",100,100,100);
+    myprintf("%%x:%x\n%%X:%X\n",15,15);
+    myprintf("%%o:%o\n",15);
+    myprintf("%%s:%s\n%%5s:%5s\n%%5.2s:%5.2s\n","Say","Say","Say");
+    myprintf("%%c:%c\n",'a');
+    return 0;
 }
