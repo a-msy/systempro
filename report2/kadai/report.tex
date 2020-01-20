@@ -599,7 +599,7 @@ v1: 20+8 = 28 ...
 アドレス的に続いていることが確認できた。
   \end{verbatim}
 
- \section{2-5}
+ \section{課題2-5}
 本節ではまず作成したプログラムを紹介した後に，作成する際のプログラムの作成方針と作成したプログラムに対する考察を述べる.
 また，その動作を確認した応用的なテストプログラムの結果とそれに対する考察も行う.
   \subsection{作成したプログラム}
@@ -607,12 +607,12 @@ v1: 20+8 = 28 ...
 \begin{verbatim}
      1	#define ROUNDUP_SIZEOF(x) (((sizeof(x)+3)/4)*4)
      2	
-     3	#define ZERO_PADDING         (1<<1)//000001 シフト演算
-     4	#define ALTERNATIVE          (1<<2)//000010
-     5	#define THOUSAND_GROUP       (1<<3)//000100
-     6	#define CAPITAL_LETTER       (1<<4)//001000
-     7	#define WITH_SIGN_CHAR       (1<<5)//010000
-     8	#define LEFT_JUSTIFIED       (1<<6)//100000
+     3	#define fill_zero         (1<<1)//000001 シフト演算
+     4	#define alternative          (1<<2)//000010
+     5	#define three_div       (1<<3)//000100
+     6	#define capital       (1<<4)//001000
+     7	#define with_sign       (1<<5)//010000
+     8	#define left_start       (1<<6)//100000
      9	
     10	#define _isnumc(x) ( (x) >= '0' && (x) <= '9' )
     11	#define _ctoi(x)   ( (x) -  '0' )//0という文字を基準として引き算すれば数字文字を示す数値になる
@@ -657,19 +657,19 @@ v1: 20+8 = 28 ...
     50	    int pad = ' ';
     51	    char *symbols = symbols_s;
     52	
-    53	    if(flags & CAPITAL_LETTER){
+    53	    if(flags & capital){
     54	        symbols = symbols_c;
     55	    }
     56	
     57	    do {
     58	        buf[i++] = symbols[n % base];
-    59	        if( (flags & THOUSAND_GROUP) && (i%4)==3) buf[i++] = ',';
+    59	        if( (flags & three_div) && (i%4)==3) buf[i++] = ',';
     60	    } while (n /= base);
     61	
     62	    length = length - i;
     63	
-    64	    if (!(flags & LEFT_JUSTIFIED)) {
-    65	        if(flags & ZERO_PADDING){
+    64	    if (!(flags & left_start)) {
+    65	        if(flags & fill_zero){
     66	            pad = '0';
     67	        }
     68	        while (length > 0) { 
@@ -682,7 +682,7 @@ v1: 20+8 = 28 ...
     75	        buf[i++] = sign;
     76	    }
     77	    
-    78	    if (flags & ALTERNATIVE){
+    78	    if (flags & alternative){
     79	        if (base == 8){
     80	            buf[i++] = '0';
     81	        }
@@ -723,23 +723,23 @@ v1: 20+8 = 28 ...
    116	            while (mystrchr("'-+ #0", *fmt)) {
    117	                switch (*fmt) {
    118	                case '\'': 
-   119	                    flags |= THOUSAND_GROUP;             
+   119	                    flags |= three_div;             
    120	                    break;
    121	                case  '-': 
-   122	                    flags |= LEFT_JUSTIFIED;             
+   122	                    flags |= left_start;             
    123	                    break;
    124	                case  '+': 
-   125	                    flags |= WITH_SIGN_CHAR; 
+   125	                    flags |= with_sign; 
    126	                    sign = '+'; 
    127	                    break;
    128	                case  '#': 
-   129	                    flags |= ALTERNATIVE;                
+   129	                    flags |= alternative;                
    130	                    break;
    131	                case  '0': 
-   132	                    flags |= ZERO_PADDING;               
+   132	                    flags |= fill_zero;               
    133	                    break;
    134	                case  ' ': 
-   135	                    flags |= WITH_SIGN_CHAR; 
+   135	                    flags |= with_sign; 
    136	                    sign = ' '; 
    137	                    break;
    138	                }
@@ -785,7 +785,7 @@ v1: 20+8 = 28 ...
    178	                    tmp = precision;
    179	                }
    180	                length = length - tmp;
-   181	                if (!(flags & LEFT_JUSTIFIED)){   
+   181	                if (!(flags & left_start)){   
    182	                    while ( length > 0 ){
    183	                        length--;
    184	                        print_char(' ');
@@ -809,7 +809,7 @@ v1: 20+8 = 28 ...
    202	                print_char('%');
    203	                break;
    204	            case 'X':
-   205	                flags |= CAPITAL_LETTER;
+   205	                flags |= capital;
    206	            case 'x':
    207	                put_int(*(int*)p,16,length,sign,flags);
    208	                p= p + ROUNDUP_SIZEOF(int);
@@ -858,34 +858,65 @@ printfのサブセットを作成するにあたり，浮動小数は対応す�
  if (n >= base) radix_print(n / base, base);
   putchar("0123456789ABCDEF"[n % base]);
 \end{verbatim}
-
+なお，複雑な修飾子の対応ができなかった，また，8進数や16進数での表示も，10進数と基底が違うだけなのでまとめることはできないかと考え，この方針ではない方法で改良を行ったため以降で説明をする．
+\subsection{関数の拡張１：フラグについて}
 一通り終えたところで，各種サブセットの拡張に対応させることを始めるためにいくつか準備をおこなった.
 
-様々な拡張に必要なフラグを定義した.\verb|ZERO_PADDING|は，
-
+まず，様々な拡張に必要なフラグを定義した.
+\begin{description}
+  \item[fill\_zero]0で埋めるためのフラグ．数値を表示する際に用いる．
+  \item[alternative]8進数と16進数を明示的に表示するためのもの．
+  \item[three\_div]三桁ごとにカンマを入れるかどうかのフラグ．
+  \item[capital]16進数で文字を大文字にするかどうかのフラグ．文字列を入れ替えるために使う．
+  \item[with\_sign]正の値ならば数値の前にプラスの符号を付与するためのフラグ．
+  \item[left\_start]左寄せで表示するためのフラグ．
+\end{description}
+\subsection{関数の拡張２：別に定義した関数について}
+\subsubsection{my\_strlen}
 まず，関数\verb|my_strlen()|についてだが，これは受け取った文字列の文字数をカウントする.
-
+\subsubsection{mystrchr}
 次に，関数\verb|mystrchr()|について，これは受け取った文字列がもともと指定されている文字列の中に対応する文字があるかどうか調べる.あればその文字を返し，なければヌル文字を返す.文字に対する操作を行う.
-
+\subsubsection{print\_char}
 関数\verb|print_char()|は，受け取った文字の後にヌル文字を入れ，文字列へと変えて1文字ずつ表示することを担っている.
-
+\subsubsection{put\_int}
 次に，関数\verb|put_int()|だが，なぜこれを作ったか説明すると，10進数も8進数も16進数も基底が異なるだけで数値を表示することには変わりない.また，10進数を10で，10進数を8で，10進数を16で商や余りを出すことでそれぞれ基底変換ができると思ったため，すべての操作を基底をかえるだけで行えると良いと考えたからである.
 
-\verb|put_int()|の動作について説明をする.変数\verb|symbols_s, symbols_c|は，基底に対する文字を取得する際に利用する.また，カンマや正負の符号は文字であるから数値なども含めて文字列として扱えるように\verb|buf[],i|を利用している.変数\verb|pad|には文字数を調整するための空白に対応する数値が入っている.関数\verb|put_int|に入ると，まず大文字にするためのフラグが立っているか論理積演算を行う.そして，次に基底の変換を一桁ずつ行う.この際に，3桁ごとにカンマを打つフラグ\verb|THOUSAND_GROUP|があればカンマを挿入する.ここまでで，指定された最大文字表示数を使っているのでその分の変数\verb|length|を減らす.それが終わると，次は左詰め表示のフラグが立っていないときの処理を行う.この時に，0で空白を埋めるフラグがあれば，\verb|pad|を$0$に変更する.そして，lengthが0になるまで0を表示する.次に，10進については符号があるため，符号があれば\verb|sign|
+\verb|put_int()|の動作について説明をする.変数\verb|symbols_s, symbols_c|は，基底に対する文字を取得する際に利用する.また，カンマや正負の符号は文字であるから数値なども含めて文字列として扱えるように\verb|buf[],i|を利用している.変数\verb|pad|には文字数を調整するための空白に対応する数値が入っている.
+
+関数\verb|put_int|に入ると，まず大文字にするためのフラグが立っているか論理積演算を行う.そして，次に基底の変換を一桁ずつ行う.この際に，3桁ごとにカンマを打つフラグ\verb|three_div|があればカンマを挿入する.ここまでで，指定された最大文字表示数を使っているのでその分の変数\verb|length|を減らす.それが終わると，次は左詰め表示のフラグが立っていないときの処理を行う.この時に，0で空白を埋めるフラグがあれば，\verb|pad|を$0$に変更する.そして，lengthが0になるまで変数padの文字を格納する.次に，10進については符号があるため，符号があれば\verb|sign|を付与する．そしてフラグの処理の最後に，\verb|alternative|があれば，各基底に対する表示を行うために文字を格納する．
+そして，関数の最後で変数\verb|i|を一つづつ減らしていき格納した文字の新しいものから順に表示していく．表示文字数が足りない場合はpadの内容を表示する．
+
+\subsection{関数の拡張３：myprintf関数}
+本命となる関数\verb|myprintf|について説明をする．この関数では，\verb|fmt|の要素を一つづつ見ていき，\verb|%|が現れたら修飾子に対応するmyprintfの引数を表示させようとしている．fmtの要素がなくなるまでループする．
+
+\subsubsection{宣言した変数について}
+\begin{description}
+\item[char *p] 第２引数以降を格納するために利用する．fmtのアドレスにfmtのサイズ分追加する．charとして扱うためにキャストしている．
+\item[int flags] 各種のフラグと論理演算を行うために用いる．立っているフラグによって値が変わる．
+\item[int length] 最大の表示文字幅を示す．
+\item[int precision] 有効な文字数を表す．文字列の先頭からの数に対応する．
+\item[int tmp] 文字列表示の際に最大の表示文字幅を計算するために用いる．
+\item[char sign] 符号を表示するために格納する変数．初期値は空文字である．
+\item[char *s] 引数として受け取ったpの要素を格納し，扱いやすくする．    
+\end{description}
+\subsubsection{116行目からのwhile文}
+\subsubsection{142からのwhile文}
+\subsubsection{146からのif文}
+\subsubsection{159からのswitch文}
   \subsection{テスト結果・評価結果}
 以下が\verb|main()|での表示テストの結果である.わかりやすくするために文字位置をかえているかコロン以降は変更していないため，サブセットの機能を保証できる.
 \begin{verbatim}
 TEST
-   %d:100
-  %5d:  100
- %-5d:100  
-   %x:f
-   %X:F
-   %o:17
-   %s:Say
-  %5s:  Say
+%d   :100
+%5d  :  100
+%-5d :100  
+%x   :f
+%X   :F
+%o   :17
+%s   :Say
+%5s  :  Say
 %5.2s:   Sa
-   %c:a
+%c   :a
 \end{verbatim}
 
 \section{感想}
