@@ -2,7 +2,7 @@
 \usepackage[top=25truemm,  bottom=30truemm,left=25truemm, right=25truemm]{geometry}
 \usepackage{ascmac}
 \usepackage{verbatim}
-\title{システムプログラミング１ \\
+\title{システムプログラミング２ \\
        レポート}
 
 % ToDo: 自分自身の氏名と学生番号に書き換える
@@ -10,9 +10,9 @@
         学生番号: 09430509}
 
 % ToDo: 教員の指示に従って適切に書き換える
-\date{出題日: 2019年10月07日 \\
-      提出日: 2019年11月20日 \\
-      締切日: 2019年11月25日 \\}  % 注：最後の\\は不要に見えるが必要．
+\date{出題日: 2019年12月02日 \\
+      提出日: 2020年01月27日 \\
+      締切日: 2020年01月27日 \\}  % 注：最後の\\は不要に見えるが必要．
 
 \begin{document}
 \maketitle
@@ -24,8 +24,7 @@
 \section{概要} \label{chap:abstract}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-本演習では，PIMというMIPS CPUシミュレータのハードウェア上にC言語とアセンブリ言語を使用して文字の表示と入力のためのシステムコールライブラリを作成する． さらに，そのライブラリを使用して printf 及び gets 相当を C言語で作成する． 最後に，それらを利用した応用プログラムを動作させる．
-
+本演習では，SPIMというMIPS CPUシミュレータのハードウェア上にC言語とアセンブリ言語を使用して文字の表示と入力のためのシステムコールライブラリを作成する． さらに，そのライブラリを使用して printf関数相当を C言語で作成する． 最後に，それらを利用した応用プログラムを動作させる．
 
 なお、与えられた課題内容を以下に述べる．
 
@@ -33,7 +32,7 @@
 以下の課題についてレポートをする． プログラムは，MIPSアセンブリ言語及びC言語で記述し，SPIMを用いて動作を確認している．
 \begin{description}
 
-\item[2-1]  SPIMが提供するシステムコールを C言語から実行できるようにしたい． 教科書A.6節 「手続き呼出し規約」に従って，各種手続きをアセンブラで記述せよ． ファイル名は， syscalls.s とすること．また，記述した syscalls.s の関数をC言語から呼び出すことで， ハノイの塔(hanoi.c とする)を完成させよ． 
+\item[課題2-1]  SPIMが提供するシステムコールを C言語から実行できるようにしたい． 教科書A.6節 「手続き呼出し規約」に従って，各種手続きをアセンブラで記述せよ． ファイル名は， syscalls.s とすること．また，記述した syscalls.s の関数をC言語から呼び出すことで， ハノイの塔(hanoi.c とする)を完成させよ． 
 \begin{verbatim}
  1: void hanoi(int n, int start, int finish, int extra)
  2: {
@@ -71,14 +70,14 @@ Move disk 2 from peg 3 to peg 2.
 Move disk 1 from peg 1 to peg 2.
 \end{verbatim} 
 
-\item[2-2]hanoi.s を例に spim-gcc の引数保存に関するスタックの利用方法について，説明せよ． そのことは，規約上許されるスタックフレームの最小値24とどう関係しているか． このスタックフレームの最小値規約を守らないとどのような問題が生じるかについて解説せよ．
+\item[課題2-2]hanoi.s を例に spim-gcc の引数保存に関するスタックの利用方法について，説明せよ． そのことは，規約上許されるスタックフレームの最小値24とどう関係しているか． このスタックフレームの最小値規約を守らないとどのような問題が生じるかについて解説せよ．
 
 \verb|hanoi.c|のソースコード
 \begin{verbatim}
 
 \end{verbatim}
 
-\item[2-3]以下のプログラム report2-1.c をコンパイルした結果をもとに， auto変数とstatic変数の違い，ポインタと配列の違いについてレポートせよ．
+\item[課題2-3]以下のプログラム report2-1.c をコンパイルした結果をもとに， auto変数とstatic変数の違い，ポインタと配列の違いについてレポートせよ．
 \begin{verbatim}
  1: int primes_stat[10];
  2: 
@@ -105,9 +104,9 @@ Move disk 1 from peg 1 to peg 2.
 23: }
 \end{verbatim}
 
-\item[2-4]printf など，一部の関数は，任意の数の引数を取ることができる． これらの関数を可変引数関数と呼ぶ． MIPSのCコンパイラにおいて可変引数関数の実現方法について考察し，解説せよ．
+\item[課題2-4]printf など，一部の関数は，任意の数の引数を取ることができる． これらの関数を可変引数関数と呼ぶ． MIPSのCコンパイラにおいて可変引数関数の実現方法について考察し，解説せよ．
 
-\item[2-5]printf のサブセットを実装し， SPIM上でその動作を確認する応用プログラム(自由なデモプログラム)を作成せよ． フルセットにどれだけ近いか，あるいは，よく使う重要な仕様だけをうまく切り出して， 実用的なサブセットを実装しているかについて評価する． ただし，浮動小数は対応しなくてもよい(SPIM自体がうまく対応していない)． 加えて，この printf を利用した応用プログラムの出来も評価の対象とする.
+\item[課題2-5]printf のサブセットを実装し， SPIM上でその動作を確認する応用プログラム(自由なデモプログラム)を作成せよ． フルセットにどれだけ近いか，あるいは，よく使う重要な仕様だけをうまく切り出して， 実用的なサブセットを実装しているかについて評価する． ただし，浮動小数は対応しなくてもよい(SPIM自体がうまく対応していない)． 加えて，この printf を利用した応用プログラムの出来も評価の対象とする.
 
 \end{description}
 \subsection{xspimの実行方法}
@@ -582,22 +581,119 @@ pointer[2] = c
  18  }
   \end{verbatim}
   \subsubsection{MIPSへのコンパイル結果}
-  \subsubsection{考察}
   \begin{verbatim}
-    まず、MIPSは引数用に利用できるレジスタがa0からa3までの4つなので、
-    a1からa3をスタックに貯める。さらに、そこからスタックの先には4番目
-    の引数以降が格納されている前提となる。 
-    一つずつロードしてき、インデックスを4ずらしていく。
-    ロードしたデータを加算しては、0判定をしてループ脱出を決めるという
-    具合だ。
-
-    sumが呼び出されてからspが-8されるため、sumの中では、
-    4番目以降の引数は、
-v0: 16+8 = 24
-v1: 20+8 = 28 ...
-となり、第一引数から第8引数が12,16,20となっているのに、
-アドレス的に続いていることが確認できた。
+    1          .file   1 "mips_hikisu.c"
+    2
+    3   # -G value = 0, Arch = r2000, ISA = 1
+    4   # GNU C version 2.96 20000731 (Red Hat Linux 7.3 2.96-113.2) (mipsel-linux) compiled by GNU C version 2.96 20000731 (Red Hat Linux 7.3 2.96-113.2).       
+    5   # options passed:  -mno-abicalls -mrnames -mmips-as
+    6   # -mno-check-zero-division -march=r2000 -O0 -fleading-underscore
+    7   # -finhibit-size-directive -fverbose-asm
+    8   # options enabled:  -fpeephole -ffunction-cse -fkeep-static-consts
+    9   # -fpcc-struct-return -fsched-interblock -fsched-spec -fbranch-count-reg
+   10   # -fnew-exceptions -fcommon -finhibit-size-directive -fverbose-asm
+   11   # -fgnu-linker -fargument-alias -fleading-underscore -fident -fmath-errno
+   12   # -mrnames -mno-check-zero-division -march=r2000
+   13
+   14
+   15          .text
+   16          .align  2
+   17  _sum:
+   18          sw      $a0,0($sp)
+   19          sw      $a1,4($sp)
+   20          sw      $a2,8($sp)
+   21          sw      $a3,12($sp)
+   22          subu    $sp,$sp,24
+   23          sw      $fp,16($sp)
+   24          move    $fp,$sp
+   25          sw      $a0,24($fp)
+   26          sw      $zero,0($fp)
+   27          addu    $v0,$fp,28
+   28          sw      $v0,8($fp)
+   29          lw      $v0,24($fp)
+   30          sw      $v0,4($fp)
+   31  $L3:
+   32          lw      $v0,4($fp)
+   33          bne     $v0,$zero,$L6
+   34          j       $L4
+   35  $L6:
+   36          lw      $v1,0($fp)
+   37          lw      $v0,4($fp)
+   38          addu    $v0,$v1,$v0
+   39          sw      $v0,0($fp)
+   40          lw      $v0,8($fp)
+   41          addu    $v1,$v0,3
+   42          li      $v0,-4                  # 0xfffffffc
+   43          and     $v0,$v1,$v0
+   44          sw      $v0,8($fp)
+   45          lw      $v0,8($fp)
+   46          addu    $v0,$v0,0
+   47          move    $v1,$v0
+   48          lw      $v0,8($fp)
+   49          addu    $v0,$v0,4
+   50          sw      $v0,8($fp)
+   51          lw      $v0,0($v1)
+   52          sw      $v0,4($fp)
+   53          j       $L3
+   54  $L4:
+   55          lw      $v0,0($fp)
+   56          move    $sp,$fp
+   57          lw      $fp,16($sp)
+   58          addu    $sp,$sp,24
+   59          j       $ra
+   60          .align  2
+   61  _call_sum:
+   62          subu    $sp,$sp,48
+   63          sw      $ra,44($sp)
+   64          sw      $fp,40($sp)
+   65          move    $fp,$sp
+   66          sw      $a0,48($fp)
+   67          lw      $a0,48($fp)
+   68          lw      $v0,48($fp)
+   69          addu    $a1,$v0,4
+   70          lw      $v0,48($fp)
+   71          addu    $a2,$v0,8
+   72          lw      $v0,48($fp)
+   73          addu    $v1,$v0,12
+   74          lw      $v0,48($fp)
+   75          addu    $v0,$v0,16
+   76          lw      $v0,0($v0)
+   77          sw      $v0,16($sp)
+   78          lw      $v0,48($fp)
+   79          addu    $v0,$v0,20
+   80          lw      $v0,0($v0)
+   81          sw      $v0,20($sp)
+   82          lw      $v0,48($fp)
+   83          addu    $v0,$v0,24
+   84          lw      $v0,0($v0)
+   85          sw      $v0,24($sp)
+   86          lw      $v0,48($fp)
+   87          addu    $v0,$v0,28
+   88          lw      $v0,0($v0)
+   89          sw      $v0,28($sp)
+   90          lw      $v0,48($fp)
+   91          addu    $v0,$v0,32
+   92          lw      $v0,0($v0)
+   93          sw      $v0,32($sp)
+   94          lw      $v0,48($fp)
+   95          addu    $v0,$v0,36
+   96          lw      $v0,0($v0)
+   97          sw      $v0,36($sp)
+   98          lw      $a0,0($a0)
+   99          lw      $a1,0($a1)
+  100          lw      $a2,0($a2)
+  101          lw      $a3,0($v1)
+  102          jal     _sum
+  103          move    $sp,$fp
+  104          lw      $ra,44($sp)
+  105          lw      $fp,40($sp)
+  106          addu    $sp,$sp,48
+  107          j       $ra
   \end{verbatim}
+  \subsubsection{考察}
+  \verb|sum()|の内容から，まず,MIPSは引数用に利用できるレジスタがa0からa3までの4つなので,a1からa3をスタックに格納している様子が１７行目以降でわかる．さらに、そこからスタックの先には4番目の引数以降が格納されていると考えることができる.そして１つずつデータをロードし，処理を行っていた．
+  
+  ６１行目以降の\verb|call_sum()|が呼び出されてからは，スタックを引数の個数分（４８）確保し，戻りアドレスを渡すa0を除いたa1から引数の値が順次読み出されていた．しかし，a3については利用されておらずv1が利用されている原因はわからなかった．第４引数以降は77行目，81行目などより４ずつずらして引数を読み取っていることから，引数がアドレス的に続いていることが確認でき，MIPSでは引数は最大限用意されているレジスタを利用し以降はスタックを利用することで可変引数の実装を実現していることを確認した．
 
  \section{課題2-5}
 本節ではまず作成したプログラムを紹介した後に，作成する際のプログラムの作成方針と作成したプログラムに対する考察を述べる.
