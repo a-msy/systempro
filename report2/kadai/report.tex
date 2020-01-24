@@ -33,6 +33,8 @@
 \begin{description}
 
 \item[課題2-1]  SPIMが提供するシステムコールを C言語から実行できるようにしたい． 教科書A.6節 「手続き呼出し規約」に従って，各種手続きをアセンブラで記述せよ． ファイル名は， syscalls.s とすること．また，記述した syscalls.s の関数をC言語から呼び出すことで， ハノイの塔(hanoi.c とする)を完成させよ． 
+
+\verb|hanoi.c|のソースコード
 \begin{verbatim}
  1: void hanoi(int n, int start, int finish, int extra)
  2: {
@@ -72,9 +74,108 @@ Move disk 1 from peg 1 to peg 2.
 
 \item[課題2-2]hanoi.s を例に spim-gcc の引数保存に関するスタックの利用方法について，説明せよ． そのことは，規約上許されるスタックフレームの最小値24とどう関係しているか． このスタックフレームの最小値規約を守らないとどのような問題が生じるかについて解説せよ．
 
-\verb|hanoi.c|のソースコード
+\verb|hanoi.s|のソースコード
 \begin{verbatim}
-
+  1          .file   1 "hanoi.c"
+  2
+  3   # -G value = 0, Arch = r2000, ISA = 1
+  4   # GNU C version 2.96 20000731 (Red Hat Linux 7.3 2.96-113.2) 
+(mipsel-linux) compiled by GNU C version 2.96 20000731 (Red Hat Linux 7.3 2.96-113.2).
+  5   # options passed:  -mno-abicalls -mrnames -mmips-as
+  6   # -mno-check-zero-division -march=r2000 -O0 -fleading-underscore        
+  7   # -finhibit-size-directive -fverbose-asm
+  8   # options enabled:  -fpeephole -ffunction-cse -fkeep-static-consts      
+  9   # -fpcc-struct-return -fsched-interblock -fsched-spec -fbranch-count-reg
+ 10   # -fnew-exceptions -fcommon -finhibit-size-directive -fverbose-asm      
+ 11   # -fgnu-linker -fargument-alias -fleading-underscore -fident -fmath-errno
+ 12   # -mrnames -mno-check-zero-division -march=r2000
+ 13
+ 14
+ 15          .rdata
+ 16          .align  2
+ 17  $LC0:
+ 18          .asciiz "Move disk "
+ 19          .align  2
+ 20  $LC1:
+ 21          .asciiz " from peg "
+ 22          .align  2
+ 23  $LC2:
+ 24          .asciiz " to peg "
+ 25          .align  2
+ 26  $LC3:
+ 27          .asciiz ".\n"
+ 28          .text
+ 29          .align  2
+ 30  _hanoi:
+ 31          subu    $sp,$sp,24
+ 32          sw          $ra,20($sp)
+ 33          sw          $fp,16($sp)
+ 34          move    $fp,$sp
+ 35          sw          $a0,24($fp)
+ 36          sw          $a1,28($fp)
+ 37          sw          $a2,32($fp)
+ 38          sw          $a3,36($fp)
+ 39          lw          $v0,24($fp)
+ 40          beq         $v0,$zero,$L3
+ 41          lw          $v0,24($fp)
+ 42          addu    $v0,$v0,-1
+ 43          move    $a0,$v0
+ 44          lw          $a1,28($fp)
+ 45          lw          $a2,36($fp)
+ 46          lw          $a3,32($fp)
+ 47          jal         _hanoi
+ 48          la          $a0,$LC0
+ 49          jal         _print_string
+ 50          lw          $a0,24($fp)
+ 51          jal         _print_int
+ 52          la          $a0,$LC1
+ 53          jal         _print_string
+ 54          lw          $a0,28($fp)
+ 55          jal         _print_int
+ 56          la          $a0,$LC2
+ 57          jal         _print_string
+ 58          lw          $a0,32($fp)
+ 59          jal         _print_int
+ 60          la          $a0,$LC3
+ 61          jal         _print_string
+ 62          lw          $v0,24($fp)
+ 63          addu    $v0,$v0,-1
+ 64          move    $a0,$v0
+ 65          lw          $a1,36($fp)
+ 66          lw          $a2,32($fp)
+ 67          lw          $a3,28($fp)
+ 68          jal         _hanoi
+ 69  $L3:
+ 70          move    $sp,$fp
+ 71          lw          $ra,20($sp)
+ 72          lw          $fp,16($sp)
+ 73          addu    $sp,$sp,24
+ 74          j           $ra
+ 75          .rdata
+ 76          .align  2
+ 77  $LC4:
+ 78          .asciiz "Enter number of disks> "
+ 79          .text
+ 80          .align  2
+ 81  main:
+ 82          subu    $sp,$sp,32
+ 83          sw          $ra,28($sp)
+ 84          sw          $fp,24($sp)
+ 85          move    $fp,$sp
+ 86          la          $a0,$LC4
+ 87          jal         _print_string
+ 88          jal         _read_int
+ 89          sw          $v0,16($fp)
+ 90          lw          $a0,16($fp)
+ 91          li          $a1,1                       # 0x1
+ 92          li          $a2,2                       # 0x2
+ 93          li          $a3,3                       # 0x3
+ 94          jal         _hanoi
+ 95          move    $sp,$fp
+ 96          lw          $ra,28($sp)
+ 97          lw          $fp,24($sp)
+ 98          addu    $sp,$sp,32
+ 99          j           $ra
 \end{verbatim}
 
 \item[課題2-3]以下のプログラム report2-1.c をコンパイルした結果をもとに， auto変数とstatic変数の違い，ポインタと配列の違いについてレポートせよ．
@@ -123,7 +224,24 @@ $ spim-gcc file.c
  \section{課題2-1}
 以下に作成したプログラムと，作成内容、また作成時の考察を記載する．
 
-  \subsection{作成したプログラム}
+ 
+\subsection{ハノイの塔について}
+ハノイの塔とは3本の杭と、中央に穴の開いた大きさの異なる複数の円盤から構成され，
+最初はすべての円盤が左端の杭に小さいものが上になるように順に積み重ねられている。
+円盤を一回に一枚ずつどれかの杭に移動させることができるが、小さな円盤の上に大きな円盤を乗せることはできないというルールに従い
+すべての円盤を右端の杭に移動させられれば完成。
+
+解法に再帰的アルゴリズムが有効な問題として有名であり、
+プログラミングにおける再帰的呼出しの例題としてもよく用いられる。
+  \subsection{プログラムの説明及び作成時の考察}
+作成は，手続き呼出し規約に基づいて，各ルーチンごとにスタックポインタをルーチンの開始時に確保し，終了時に破棄して呼び出された関数に戻る設計にしている．\verb|syscall|でカーネルに所望することを\verb|$v0|レジスタへ格納し，\verb|syscall|を呼び出している．
+
+\verb|print_int|に対応する関数は，$4$行目から$13$行目に記載している．\verb|print_string|に対応する関数は，$15$行目から$24$行目に記載している．\verb|read_int|に対応する関数は，$26$行目から$35$行目に記載している．\verb|read_string|に対応する関数は，$37$行目から$46$行目に記載している．\verb|exit|に対応する関数は，$48$行目から$57$行目に記載している．\verb|print_char|に対応する関数は，$59$行目から$68$行目に記載している．\verb|read_char|に対応する関数は，$70$行目から$79$行目に記載している．
+
+なお、今回の\verb|hanoi.c|には用いないが，文字列をユーザから受け付ける\verb|read_string|，数値をユーザから受け付ける\verb|read_int|と文字を表示する\verb|print_char|と文字をユーザから受け付ける\verb|read_char|，そして，プログラムを終了する\verb|exit|を作成した．
+  
+作成したプログラム中のラベルの先頭にアンダーバーをつけているがこれは，本演習で用いたgccのルールでコンパイラに依存するものであるが，アセンブリ中で\verb|_function_name|と記述しておくと，C言語から\verb|function_name|で呼び出すことができるからである．
+ \subsection{作成したプログラム}
   syscalls.s
 \begin{verbatim}
      1	        .text
@@ -206,23 +324,6 @@ $ spim-gcc file.c
     78	        addu  $sp, $sp, 24
     79	        j     $ra
 \end{verbatim}
-\subsection{ハノイの塔について}
-ハノイの塔とは3本の杭と、中央に穴の開いた大きさの異なる複数の円盤から構成され，
-最初はすべての円盤が左端の杭に小さいものが上になるように順に積み重ねられている。
-円盤を一回に一枚ずつどれかの杭に移動させることができるが、小さな円盤の上に大きな円盤を乗せることはできないというルールに従い
-すべての円盤を右端の杭に移動させられれば完成。
-
-解法に再帰的アルゴリズムが有効な問題として有名であり、
-プログラミングにおける再帰的呼出しの例題としてもよく用いられる。
-  \subsection{プログラムの説明及び作成時の考察}
-作成は，手続き呼出し規約に基づいて，各ルーチンごとにスタックポインタをルーチンの開始時に確保し，終了時に破棄して呼び出された関数に戻る設計にしている．\verb|syscall|でカーネルに所望することを\verb|$v0|レジスタへ格納し，\verb|syscall|を呼び出している．
-
-\verb|print_int|に対応する関数は，$4$行目から$13$行目に記載している．\verb|print_string|に対応する関数は，$15$行目から$24$行目に記載している．\verb|read_int|に対応する関数は，$26$行目から$35$行目に記載している．\verb|read_string|に対応する関数は，$37$行目から$46$行目に記載している．\verb|exit|に対応する関数は，$48$行目から$57$行目に記載している．\verb|print_char|に対応する関数は，$59$行目から$68$行目に記載している．\verb|read_char|に対応する関数は，$70$行目から$79$行目に記載している．
-
-なお、今回の\verb|hanoi.c|には用いないが，文字列をユーザから受け付ける\verb|read_string|，数値をユーザから受け付ける\verb|read_int|と文字を表示する\verb|print_char|と文字をユーザから受け付ける\verb|read_char|，そして，プログラムを終了する\verb|exit|を作成した．
-  
-作成したプログラム中のラベルの先頭にアンダーバーをつけているがこれは，本演習で用いたgccのルールでコンパイラに依存するものであるが，アセンブリ中で\verb|_function_name|と記述しておくと，C言語から\verb|function_name|で呼び出すことができるからである．
-
  \section{課題2-2}
 以下に課題内容に対する考察を記載する．
   \subsection{spim-gccの引数保存に関するスタックの利用方法}
@@ -240,7 +341,7 @@ $ spim-gcc file.c
     39		lw	    $v0,24($fp)
 \end{verbatim}
 31行目で，スタックを24バイト分確保していることが分かる．しかし，35行目から利用されているレジスタ\verb|$a0|~\verb|$a3|の4つは，確保したスタックよりも後方の\verb|_hanoi|を呼び出した側の関数が確保したスタックを使用している．ここで，新しく関数から呼び出された表\ref{tab:stack}にスタックの様子を表に表してみる．
-\begin{table}[htb]
+\begin{table}[t]
 \label{tab:stack}
 \centering
 \begin{tabular}{|l|l|l|l|}
@@ -450,9 +551,7 @@ C言語でのポインタと配列の違いについて\ref{sec:ptrary}節のソ
 
 続いて，\verb|pointer|と\verb|array|のアドレスを見てみた．すると，両者は異なっていたが，\verb|&array|と
 \verb|array|は同じ値になっていた．一方，\verb|pointer|は別のアドレスから配列\verb|array|の先頭アドレスを
-指していた．これは，ポインタにはアドレスを保存するメモリがあるが，配列にはアドレスを格納するメモリがないと言えるだろう．
-
-つまり，C言語においてポインタはアドレスを格納する変数であるのに対し、配列は単なるアドレスであると考える．
+指していた．これは，ポインタにはアドレスを保存するメモリがあるが，配列にはアドレスを格納するメモリがないと言えるだろう．つまり，C言語においてポインタはアドレスを格納する変数であるのに対し、配列は単なるアドレスであると考える．
 \subsubsection{作成したプログラム}\label{sec:ptrary}
 \begin{verbatim}
   1  #include<stdio.h>        
@@ -561,31 +660,30 @@ pointer[2] = c
   関数\verb|call_sum()|は，配列の要素を関数\verb|sum()|に渡すための関数である．ここでは10個の配列の値を渡す．
   \subsubsection{作成したプログラム}
   \begin{verbatim}
-  1  #include <stdarg.h>
-  2
-  3  int sum(int nfirst, ...)
-  4  {
-  5    int r = 0, n;
-  6    va_list args;
-  7
-  8    va_start(args, nfirst);
-  9    for (n = nfirst; n != 0; n = va_arg(args, int)) r += n;
- 10    va_end(args);
- 11
- 12    return r;
- 13  }
- 14
- 15  int call_sum(int a[10])
- 16  {
- 17    return sum(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9]);
- 18  }
+    1  #include <stdarg.h>
+    2  int sum(int nfirst, ...)
+    3  {
+    4    int r = 0, n;
+    5    va_list args;
+    6
+    7    va_start(args, nfirst);
+    8    for (n = nfirst; n != 0; n = va_arg(args, int)) r += n;
+    9    va_end(args);
+   10
+   11    return r;
+   12  }
+   13  int call_sum(int a[10])
+   14  {
+   15    return sum(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9]);
+   16  }
   \end{verbatim}
   \subsubsection{MIPSへのコンパイル結果}
   \begin{verbatim}
     1          .file   1 "mips_hikisu.c"
     2
     3   # -G value = 0, Arch = r2000, ISA = 1
-    4   # GNU C version 2.96 20000731 (Red Hat Linux 7.3 2.96-113.2) (mipsel-linux) compiled by GNU C version 2.96 20000731 (Red Hat Linux 7.3 2.96-113.2).       
+    4   # GNU C version 2.96 20000731 (Red Hat Linux 7.3 2.96-113.2) 
+(mipsel-linux) compiled by GNU C version 2.96 20000731 (Red Hat Linux 7.3 2.96-113.2).       
     5   # options passed:  -mno-abicalls -mrnames -mmips-as
     6   # -mno-check-zero-division -march=r2000 -O0 -fleading-underscore
     7   # -finhibit-size-directive -fverbose-asm
@@ -701,239 +799,231 @@ pointer[2] = c
   \subsection{作成したプログラム}
 以下が作成したプログラムである.
 \begin{verbatim}
-     1	#define ROUNDUP_SIZEOF(x) (((sizeof(x)+3)/4)*4)
-     2	
-     3	#define fill_zero         (1<<1)//000001 シフト演算
-     4	#define alternative          (1<<2)//000010
-     5	#define three_div       (1<<3)//000100
-     6	#define capital       (1<<4)//001000
-     7	#define with_sign       (1<<5)//010000
-     8	#define left_start       (1<<6)//100000
-     9	
-    10	#define _isnumc(x) ( (x) >= '0' && (x) <= '9' )
-    11	#define _ctoi(x)   ( (x) -  '0' )//0という文字を基準として引き算すれば数字文字を示す数値になる
-    12	
-    13	int my_strlen(char* str){
-    14	    int length = 0; //文字列の長さを入れる箱
-    15	 
-    16	   //文字列の長さを数える
-    17	    while(*str++ != '\0'){
-    18	        length++;
-    19	    }
-    20	    return length;
-    21	}
-    22	
-    23	char * mystrchr(const char *s, int c)
-    24	{//対応する文字を検索する
-    25	    char ch = (char) c;
-    26	    while (*s) {
-    27	        if (*s == ch)
-    28	            return (char *) s;
-    29	        s++;
-    30	    }
-    31	    return '\0';
-    32	}
-    33	
-    34	void print_char(char c){
-    35	    //ヌル文字が格納されいなければならない
-    36	    //文字単体はasciizでアセンブリで扱われないからヌル文字が入らない。その処理
-    37	    //null入れなくても動いた
-    38	    char s[2];
-    39	    s[0]=c;
-    40	    s[1]='\0';
-    41	    print_string(s);
-    42	}
-    43	
-    44	void put_int(int n, int base, int length, char sign, int flags){
-    45	
-    46	    char *symbols_s = "0123456789abcdef";
-    47	    char *symbols_c = "0123456789ABCDEF";
-    48	    char buf[80];
-    49	    int i = 0;
-    50	    int pad = ' ';
-    51	    char *symbols = symbols_s;
-    52	
-    53	    if(flags & capital){
-    54	        symbols = symbols_c;
-    55	    }
-    56	
-    57	    do {
-    58	        buf[i++] = symbols[n % base];
-    59	        if( (flags & three_div) && (i%4)==3) buf[i++] = ',';
-    60	    } while (n /= base);
-    61	
-    62	    length = length - i;
-    63	
-    64	    if (!(flags & left_start)) {
-    65	        if(flags & fill_zero){
-    66	            pad = '0';
-    67	        }
-    68	        while (length > 0) { 
-    69	            length--; 
-    70	            buf[i++] = pad;
-    71	        }
-    72	    }
-    73	
-    74	    if (sign && base == 10){
-    75	        buf[i++] = sign;
-    76	    }
-    77	    
-    78	    if (flags & alternative){
-    79	        if (base == 8){
-    80	            buf[i++] = '0';
-    81	        }
-    82	        else if (base == 16){
-    83	            buf[i++] = 'x';
-    84	            buf[i++] = '0';
-    85	        }
-    86	    }
-    87	
-    88	    while (i > 0){ 
-    89	        print_char(buf[--i]);      
-    90	    }
-    91	
-    92	    while (length>0){
-    93	        length--; 
-    94	        print_char(pad);
-    95	    }
-    96	
-    97	}
-    98	
-    99	void myprintf(char *fmt, ...){
-   100	    //第２引数以降を格納するために利用する。
-   101	    //fmtのアドレスにfmtのサイズ分追加する。charとして扱うためにキャスト。なくてもうごいた
-   102	    char *p = ((char*)&fmt)+ROUNDUP_SIZEOF(fmt);
-   103	
-   104	    while(*fmt){
-   105	
-   106	        int flags = 0;
-   107	        int length = 0;
-   108	        int precision = 0;
-   109	        int tmp = 0;
-   110	        char sign = '\0';
-   111	        char *s = '\0';
-   112	
-   113	        if(*fmt == '%'){
-   114	            fmt++;//次を見る
-   115	
-   116	            while (mystrchr("'-+ #0", *fmt)) {
-   117	                switch (*fmt) {
-   118	                case '\'': 
-   119	                    flags |= three_div;             
-   120	                    break;
-   121	                case  '-': 
-   122	                    flags |= left_start;             
-   123	                    break;
-   124	                case  '+': 
-   125	                    flags |= with_sign; 
-   126	                    sign = '+'; 
-   127	                    break;
-   128	                case  '#': 
-   129	                    flags |= alternative;                
-   130	                    break;
-   131	                case  '0': 
-   132	                    flags |= fill_zero;               
-   133	                    break;
-   134	                case  ' ': 
-   135	                    flags |= with_sign; 
-   136	                    sign = ' '; 
-   137	                    break;
-   138	                }
-   139	                fmt++;
-   140	            }
-   141	
-   142	            while( _isnumc(*fmt) ){
-   143	                length = (length*10)+_ctoi(*fmt++);
-   144	            }
-   145	
-   146	            if (*fmt == '.'){
-   147	                fmt++;//次の数字を見る
-   148	                if (*fmt == '*'){//ワイルドカードでの文字列検索
-   149	                    fmt++;
-   150	                    precision = *(int*)p;
-   151	                }
-   152	                else { 
-   153	                    while (_isnumc(*fmt) ){
-   154	                        precision = precision * 10 + _ctoi(*fmt++);
-   155	                    }
-   156	                }
-   157	            }
-   158	
-   159	            switch(*fmt){
-   160	            case 'd':
-   161	            case 'i':
-   162	                //print_int(*(int*)p);//pの中身の値をintとしてキャストし表示する
-   163	                 if(*(int*)p < 0){
-   164	                     *(int*)p *= -1;//そのままマイナスだと表示されない
-   165	                  sign = '-';
-   166	                }
-   167	                put_int(*(int*)p,10,length,sign,flags);
-   168	                p = p + ROUNDUP_SIZEOF(int);
-   169	                break;
-   170	            case 's':
-   171	                //print_string(*(char**)p);
-   172	                s = *(char**)p;
-   173	                if(s == '\0'){
-   174	                    s = "(null)";
-   175	                }
-   176	                tmp = my_strlen(s);
-   177	                if (precision && precision < tmp){
-   178	                    tmp = precision;
-   179	                }
-   180	                length = length - tmp;
-   181	                if (!(flags & left_start)){   
-   182	                    while ( length > 0 ){
-   183	                        length--;
-   184	                        print_char(' ');
-   185	                    } 
-   186	                }
-   187	                while (tmp--){
-   188	                    print_char(*s++);
-   189	                }
-   190	                while (length > 0){
-   191	                    length--;
-   192	                    print_char(' ');
-   193	                }
-   194	                p = p + ROUNDUP_SIZEOF(char*);
-   195	
-   196	                break;
-   197	            case 'c':
-   198	                print_char(*(char*)p);
-   199	                p = p + ROUNDUP_SIZEOF(char);
-   200	                break;
-   201	            case '%':
-   202	                print_char('%');
-   203	                break;
-   204	            case 'X':
-   205	                flags |= capital;
-   206	            case 'x':
-   207	                put_int(*(int*)p,16,length,sign,flags);
-   208	                p= p + ROUNDUP_SIZEOF(int);
-   209	                break;
-   210	            case 'o':
-   211	                put_int(*(int*)p,8,length,sign,flags);
-   212	                p=p+ROUNDUP_SIZEOF(int);
-   213	                break;
-   214	            }
-   215	        }
-   216	
-   217	        else{
-   218	            print_char(*fmt);
-   219	        }
-   220	        fmt++;
-   221	    }
-   222	}
-   223	
-   224	int main()
-   225	{
-   226	    myprintf("TEST\n");
-   227	    myprintf("%%d:%d\n%%5d:%5d\n%%-5d:%-5d\n",100,100,100);
-   228	    myprintf("%%x:%x\n%%X:%X\n",15,15);
-   229	    myprintf("%%o:%o\n",15);
-   230	    myprintf("%%s:%s\n%%5s:%5s\n%%5.2s:%5.2s\n","Say","Say","Say");
-   231	    myprintf("%%c:%c\n",'a');
-   232	    return 0;
-   233	}
+  1  #define ROUNDUP_SIZEOF(x) (((sizeof(x)+3)/4)*4)
+  2
+  3  #define fill_zero         (1<<1)//000001 シフト演算
+  4  #define alternative          (1<<2)//000010
+  5  #define three_div       (1<<3)//000100
+  6  #define capital       (1<<4)//001000
+  7  #define with_sign       (1<<5)//010000
+  8  #define left_start       (1<<6)//100000
+  9
+ 10  #define _isnumc(x) ( (x) >= '0' && (x) <= '9' )
+ 11  #define _ctoi(x)   ( (x) -  '0' )//0という文字を基準として引き算すれば数字文字を示す数値になる
+ 12
+ 13  int my_strlen(char* str){
+ 14      int length = 0; //文字列の長さを入れる箱
+ 15
+ 16     //文字列の長さを数える
+ 17      while(*str++ != '\0'){
+ 18          length++;
+ 19      }
+ 20      return length;
+ 21  }
+ 22
+ 23  char * mystrchr(const char *s, int c)
+ 24  {//*sに対応する文字を検索する　ｃは数値で持ってくる．そのほうができた．
+ 25      char ch = (char) c;
+ 26      while (*s) {
+ 27          if (*s == ch)
+ 28              return (char *) s;
+ 29          s++;
+ 30      }
+ 31      return '\0';
+ 32  }
+ 33
+ 34  void print_char(char c){
+ 35      //ヌル文字が格納されいなければならない
+ 36      //文字単体はasciizでアセンブリで扱われないからヌル文字が入らない。その処理
+ 37      //null入れなくても動いた
+ 38      char s[2];
+ 39      s[0]=c;
+ 40      s[1]='\0';
+ 41      print_string(s);
+ 42  }
+ 43
+ 44  void put_int(int n, int base, int length, char sign, int flags){
+ 45
+ 46      char *symbols_s = "0123456789abcdef";
+ 47      char *symbols_c = "0123456789ABCDEF";
+ 48      char buf[80];
+ 49      int i = 0;
+ 50      int pad = ' ';
+ 51      char *symbols = symbols_s;
+ 52
+ 53      if(flags & capital){
+ 54          symbols = symbols_c;
+ 55      }
+ 56
+ 57      do {
+ 58          buf[i++] = symbols[n % base];
+ 59          if( (flags & three_div) && (i%4)==3) buf[i++] = ',';
+ 60      } while (n /= base);
+ 61
+ 62      length = length - i;
+ 63
+ 64      if (!(flags & left_start)) {
+ 65          if(flags & fill_zero){
+ 66              pad = '0';
+ 67          }
+ 68          while (length > 0) {
+ 69              length--;
+ 70              buf[i++] = pad;
+ 71          }
+ 72      }
+ 73
+ 74      if (sign && base == 10){
+ 75          buf[i++] = sign;
+ 76      }
+ 77
+ 78      if (flags & alternative){
+ 79          if (base == 8){
+ 80              buf[i++] = '0';
+ 81          }
+ 82          else if (base == 16){
+ 83              buf[i++] = 'x';
+ 84              buf[i++] = '0';
+ 85          }
+ 86      }
+ 87
+ 88      while (i > 0){
+ 89          print_char(buf[--i]);
+ 90      }
+ 91
+ 92      while (length>0){
+ 93          length--;
+ 94          print_char(pad);
+ 95      }
+ 96
+ 97  }
+ 98
+ 99  void myprintf(char *fmt, ...){
+100      //第２引数以降を格納するために利用する。
+101      //fmtのアドレスにfmtのサイズ分追加する。charとして扱うためにキャスト。なくてもうごいた
+102      char *p = ((char*)&fmt)+ROUNDUP_SIZEOF(fmt);
+103
+104      while(*fmt){
+105
+106          int flags = 0;
+107          int length = 0;
+108          int precision = 0;
+109          int tmp = 0;
+110          char sign = '\0';
+111          char *s = '\0';
+112
+113          if(*fmt == '%'){
+114              fmt++;//次を見る
+115
+116              while (mystrchr("'-+#0", *fmt)) {
+117                  switch (*fmt) {
+118                  case '\'':
+119                      flags |= three_div;
+120                      break;
+121                  case  '-':
+122                      flags |= left_start;
+123                      break;
+124                  case  '+':
+125                      flags |= with_sign;
+126                      sign = '+';
+127                      break;
+128                  case  '#':
+129                      flags |= alternative;
+130                      break;
+131                  case  '0':
+132                      flags |= fill_zero;
+133                      break;
+134                  }
+135                  fmt++;
+136              }
+137
+138              while( _isnumc(*fmt)){
+139                  length = (length*10)+_ctoi(*fmt++);
+140              }
+141
+142              if (*fmt == '.'){
+143                  fmt++;//次の数字を見る
+144                  while (_isnumc(*fmt) ){
+145                      precision = precision * 10 + _ctoi(*fmt++);
+146                  }
+147              }
+148
+149              switch(*fmt){
+150              case 'd':
+151              case 'i':
+152                  //print_int(*(int*)p);//pの中身の値をintとしてキャストし表示する
+153                   if(*(int*)p < 0){
+154                       *(int*)p *= -1;//そのままマイナスだと表示されない
+155                    sign = '-';
+156                  }
+157                  put_int(*(int*)p,10,length,sign,flags);
+158                  p = p + ROUNDUP_SIZEOF(int);
+159                  break;
+160              case 's':
+161                  //print_string(*(char**)p);
+162                  s = *(char**)p;
+163                  if(s == '\0'){
+164                      s = "(null)";
+165                  }
+166                  tmp = my_strlen(s);
+167                  if (precision && precision < tmp){
+168                      tmp = precision;//左precisionが0なら偽
+169                  }
+170                  length = length - tmp;
+171                  if (!(flags & left_start)){
+172                      while ( length > 0 ){
+173                          length--;
+174                          print_char(' ');
+175                      }
+176                  }
+177                  while (tmp--){
+178                      print_char(*s++);
+179                  }
+180                  while (length > 0){
+181                      length--;
+182                      print_char(' ');
+183                  }
+184                  p = p + ROUNDUP_SIZEOF(char*);
+185
+186                  break;
+187              case 'c':
+188                  print_char(*(char*)p);
+189                  p = p + ROUNDUP_SIZEOF(char);
+190                  break;
+191              case '%':
+192                  print_char('%');
+193                  break;
+194              case 'X':
+195                  flags |= capital;
+196              case 'x':
+197                  put_int(*(int*)p,16,length,sign,flags);
+198                  p= p + ROUNDUP_SIZEOF(int);
+199                  break;
+200              case 'o':
+201                  put_int(*(int*)p,8,length,sign,flags);
+202                  p=p+ROUNDUP_SIZEOF(int);
+203                  break;
+204              }
+205          }
+206
+207          else{
+208              print_char(*fmt);
+209          }
+210          fmt++;
+211      }
+212  }
+213
+214  int main()
+215  {
+216      myprintf("TEST\n");
+217      myprintf("%%d   :%d\n%%5d  :%5d\n%%-5d :%-5d\n",100,100,100);
+218      myprintf("%%5.2d:%5.2d\n",100,100,100);
+219      myprintf("%%#x  :%#x\n%%X   :%X\n",15,15);
+220      myprintf("%%#o  :%#o\n",15);
+221      myprintf("%%s   :%s\n%%5s  :%5s\n%%5.2s:%5.2s\n","Say","Say","Say");
+222      myprintf("%%c   :%c\n",'a');
+223      myprintf("%%'d  :%'d\n",10000);
+224      return 0;
+225  }
 \end{verbatim}
   \subsection{作成方針}
 printfのサブセットを作成するにあたり，浮動小数は対応する必要がなかったため以下のサブセットを実装することにした.また，すべて可変引数関数に対応させなくてはならない.
@@ -958,11 +1048,11 @@ printfのサブセットを作成するにあたり，浮動小数は対応す�
 \subsection{関数の拡張１：フラグについて}
 一通り終えたところで，各種サブセットの拡張に対応させることを始めるためにいくつか準備をおこなった.
 
-まず，様々な拡張に必要なフラグを定義した.
+まず，様々な拡張に必要な及びオリジナルで追加した機能のためのフラグを定義した.
 \begin{description}
   \item[fill\_zero]0で埋めるためのフラグ．数値を表示する際に用いる．
   \item[alternative]8進数と16進数を明示的に表示するためのもの．
-  \item[three\_div]三桁ごとにカンマを入れるかどうかのフラグ．
+  \item[three\_div]三桁ごとにカンマを入れるかどうかのフラグ．あれば便利なため機能を追加した．
   \item[capital]16進数で文字を大文字にするかどうかのフラグ．文字列を入れ替えるために使う．
   \item[with\_sign]正の値ならば数値の前にプラスの符号を付与するためのフラグ．
   \item[left\_start]左寄せで表示するためのフラグ．
@@ -995,24 +1085,46 @@ printfのサブセットを作成するにあたり，浮動小数は対応す�
 \item[char sign] 符号を表示するために格納する変数．初期値は空文字である．
 \item[char *s] 引数として受け取ったpの要素を格納し，扱いやすくする．    
 \end{description}
-\subsubsection{116行目からのwhile文}
-\subsubsection{142からのwhile文}
-\subsubsection{146からのif文}
-\subsubsection{159からのswitch文}
+\subsubsection{117行目からのwhile文}
+mystrchr()関数によって，\verb|',-,+,#,0|が\%以降に含まれているかどうか逐一検査する．以下に動作を記載する．
+\begin{description}
+  \item[\texttt{'}が含まれていた場合]　3桁ごとにカンマを入力するフラグ\verb|three_div|を立てる．
+  \item[\texttt{-}が含まれていた場合]　左詰めのフラグ\verb|left_start|を立てる．
+  \item[\texttt{+}が含まれていた場合]　正の値ならば数値の前にプラスの符号を付与するためのフラグ\verb|with_sign|にフラグを立て，\texttt{+}を代入する．
+  \item[\#が含まれていた場合]　型を明示して数値を出力するためのフラグ\verb|alternative|を立てる．
+  \item[0が含まれていた場合]　余白を0で埋めるためのフラグ\verb|fill_zero|を立てる．
+\end{description}
+\subsubsection{139行目からのwhile文}
+これは出力全体の桁数を計算する．例えば\verb|%12d|と見つけたら，まずもともとのlength(=0)に10をかけて，1を足す．その後更新されたlength(=1)に10をかけて2を足す．するとlengthは12となり桁指定ができる．
+
+\subsubsection{146行目からのif文}
+ここでは，表示するデータの桁数を指定する．次の文字を見てlength同様の処理を行う．数字では無くなったらwhileループを抜け出す．
+
+\subsubsection{150行目からのswitch文}
+まず，\verb|case d, case i|について，これまでの処理で負の場合でも\texttt{+}が表示される可能性がある．それを避けるために負の数かどうかの判定を行い，正しく\texttt{-}を表示するための前処理を行っている．その後関数put\_int()を１０進数で実行する．最後に引数を一つずらしbreakする．
+\verb|case x, case o|についても同様で，基数を８と１６で分けているだけである．負の数については考慮しない．大文字のXのときは大文字にするフラグを立て，breakさせずにそのまま小文字のxと同様の処理を行う．最後に引数を一つずらしbreakする．
+
+\verb|case s|の場合は，まず取ってきた文字がヌルなら\verb|(null)|と表示するために文字を代入する．その後変数tmpに文字列の長さを格納．そして，表示文字数が限らている（0以外．0なら偽）かつ文字数よりも小さいならば，変数presicionをtmpに格納．次に，lengthからその文字数だけ引きのこり何文字幅があるか計算する．左詰めのフラグ\verb|left_start|がなければ残り幅が0になるまで空白を出力，そして表示文字数分だけ引数の文字を出力．左詰めの場合でまだ余白があれば空白を出力する．左詰めでなければスルーされる．最後に引数を一つずらしbreakする．
+
+\verb|case c|は純粋に引数の文字を出力し，引数を一つずらしbreakする．\verb|case %|では\%をエスケープさせるので出力するだけでbreakする．
+
+そしてswitchを抜け，文字列を再度一つずつ見ていく．以上が関数の動作概要である．
   \subsection{テスト結果・評価結果}
-以下が\verb|main()|での表示テストの結果である.わかりやすくするために文字位置をかえているかコロン以降は変更していないため，サブセットの機能を保証できる.
+以下が\verb|main()|での表示テストの結果である．
 \begin{verbatim}
-TEST
-%d   :100
-%5d  :  100
-%-5d :100  
-%x   :f
-%X   :F
-%o   :17
-%s   :Say
-%5s  :  Say
-%5.2s:   Sa
-%c   :a
+  TEST
+  %d   :100
+  %5d  :  100
+  %-5d :100
+  %5.2d:  100
+  %#x  :0xf
+  %X   :F
+  %#o  :017
+  %s   :Say
+  %5s  :  Say
+  %5.2s:   Sa
+  %c   :a
+  %'d  :10,000
 \end{verbatim}
 
 \section{感想}

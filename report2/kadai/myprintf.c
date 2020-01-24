@@ -113,7 +113,7 @@ void myprintf(char *fmt, ...){
         if(*fmt == '%'){
             fmt++;//次を見る
 
-            while (mystrchr("'-+ #0", *fmt)) {
+            while (mystrchr("'-+#0", *fmt)) {
                 switch (*fmt) {
                 case '\'': 
                     flags |= three_div;             
@@ -131,10 +131,6 @@ void myprintf(char *fmt, ...){
                 case  '0': 
                     flags |= fill_zero;               
                     break;
-                case  ' ': 
-                    flags |= with_sign; 
-                    sign = ' '; 
-                    break;
                 }
                 fmt++;
             }
@@ -145,14 +141,8 @@ void myprintf(char *fmt, ...){
 
             if (*fmt == '.'){
                 fmt++;//次の数字を見る
-                if (*fmt == '*'){//ワイルドカードでの文字列検索
-                    fmt++;
-                    precision = *(int*)p;
-                }
-                else { 
-                    while (_isnumc(*fmt) ){
-                        precision = precision * 10 + _ctoi(*fmt++);
-                    }
+                while (_isnumc(*fmt) ){
+                    precision = precision * 10 + _ctoi(*fmt++);
                 }
             }
 
@@ -175,7 +165,7 @@ void myprintf(char *fmt, ...){
                 }
                 tmp = my_strlen(s);
                 if (precision && precision < tmp){
-                    tmp = precision;
+                    tmp = precision;//左precisionが0なら偽
                 }
                 length = length - tmp;
                 if (!(flags & left_start)){   
@@ -224,10 +214,12 @@ void myprintf(char *fmt, ...){
 int main()
 {
     myprintf("TEST\n");
-    myprintf("%%d:%d\n%%5d:%5d\n%%-5d:%-5d\n",100,100,100);
-    myprintf("%%x:%x\n%%X:%X\n",15,15);
-    myprintf("%%o:%o\n",15);
-    myprintf("%%s:%s\n%%5s:%5s\n%%5.2s:%5.2s\n","Say","Say","Say");
-    myprintf("%%c:%c\n",'a');
+    myprintf("%%d   :%d\n%%5d  :%5d\n%%-5d :%-5d\n",100,100,100);
+    myprintf("%%5.2d:%5.2d\n",100,100,100);
+    myprintf("%%#x  :%#x\n%%X   :%X\n",15,15);
+    myprintf("%%#o  :%#o\n",15);
+    myprintf("%%s   :%s\n%%5s  :%5s\n%%5.2s:%5.2s\n","Say","Say","Say");
+    myprintf("%%c   :%c\n",'a');
+    myprintf("%%'d  :%'d\n",10000);
     return 0;
 }

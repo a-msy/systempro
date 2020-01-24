@@ -1,5 +1,4 @@
 #include <stdarg.h>
-
 int sum(int nfirst, ...)
 {
   int r = 0, n;
@@ -11,7 +10,6 @@ int sum(int nfirst, ...)
 
   return r;
 }
-
 int call_sum(int a[10])
 {
   return sum(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9]);

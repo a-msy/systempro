@@ -1,4 +1,3 @@
-#include <stdio.h>
 #define ROUNDUP_SIZEOF(x) (((sizeof(x)+3)/4)*4)
 
 #define fill_zero         (1<<1)//000001 シフト演算
@@ -39,7 +38,7 @@ void print_char(char c){
     char s[2];
     s[0]=c;
     s[1]='\0';
-    printf("%s",s);
+    print_string(s);
 }
 
 void put_int(int n, int base, int length, char sign, int flags){
@@ -131,6 +130,10 @@ void myprintf(char *fmt, ...){
                     break;
                 case  '0': 
                     flags |= fill_zero;               
+                    break;
+                case  ' ': 
+                    flags |= with_sign; 
+                    sign = ' '; 
                     break;
                 }
                 fmt++;
