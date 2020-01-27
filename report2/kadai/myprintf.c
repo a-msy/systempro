@@ -201,6 +201,10 @@ void myprintf(char *fmt, ...){
                 put_int(*(int*)p,8,length,sign,flags);
                 p=p+ROUNDUP_SIZEOF(int);
                 break;
+            default :
+                print_char('%');
+                print_char(*fmt);
+                break;
             }
         }
 
@@ -221,5 +225,6 @@ int main()
     myprintf("%%s   :%s\n%%5s  :%5s\n%%5.2s:%5.2s\n","Say","Say","Say");
     myprintf("%%c   :%c\n",'a');
     myprintf("%%'d  :%'d\n",10000);
+    myprintf("%%05d :%05d\n",100);
     return 0;
 }

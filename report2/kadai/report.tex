@@ -324,6 +324,17 @@ $ spim-gcc file.c
     78	        addu  $sp, $sp, 24
     79	        j     $ra
 \end{verbatim}
+\subsection{実行結果}
+\begin{verbatim}
+Enter number of disks> 3
+Move disk 1 from peg 1 to peg 2.
+Move disk 2 from peg 1 to peg 3.
+Move disk 1 from peg 2 to peg 3.
+Move disk 3 from peg 1 to peg 2.
+Move disk 1 from peg 3 to peg 1.
+Move disk 2 from peg 3 to peg 2.
+Move disk 1 from peg 1 to peg 2.
+\end{verbatim}
  \section{課題2-2}
 以下に課題内容に対する考察を記載する．
   \subsection{spim-gccの引数保存に関するスタックの利用方法}
@@ -342,6 +353,7 @@ $ spim-gcc file.c
 \end{verbatim}
 31行目で，スタックを24バイト分確保していることが分かる．しかし，35行目から利用されているレジスタ\verb|$a0|~\verb|$a3|の4つは，確保したスタックよりも後方の\verb|_hanoi|を呼び出した側の関数が確保したスタックを使用している．ここで，新しく関数から呼び出された表\ref{tab:stack}にスタックの様子を表に表してみる．
 \begin{table}[t]
+\caption{スタックの様子}
 \label{tab:stack}
 \centering
 \begin{tabular}{|l|l|l|l|}
@@ -361,7 +373,6 @@ $ spim-gcc file.c
       & +20    & ??   & 呼出側で使用   \\ \hline
       & ...    & ??   & 呼出側で使用   \\ \hline
 \end{tabular}
-\caption{スタックの様子}
 \end{table}
 MIPSのコンパイラは,1つ目の引数は\verb|$a0|に,2つ目の引数は\verb|$a1|にという具合に\verb|$a|のレジスタを使って引数を渡すことになっている．しかし，\verb|$a0|〜\verb|$a3|の4つしかないため，5つ目の引数は，スタックに保存して渡す．また，手続き呼出し規約に基づくと，\verb|offset =|$0$〜＋$15$の領域が必要になる．
 
@@ -498,6 +509,7 @@ compiled by GNU C version 2.96 20000731 (Red Hat Linux 7.3 2.96-113.2).
 そして，82行目の操作によって，スタックを解放しているためこれ以降は値が使えなくなる．main関数における自動変数宣言はmain関数の終了とプログラムの終了がほぼ同じような意味を持つため，意識をする必要はないように思う．
 以下にスタックの様子を示す.
 \begin{table}[htb]
+  \caption{スタックの様子}
   \label{tab:stack2}
   \centering
   \begin{tabular}{|l|l|l|l|}
@@ -510,7 +522,6 @@ compiled by GNU C version 2.96 20000731 (Red Hat Linux 7.3 2.96-113.2).
   旧\$sp→ & +00     & \$a0         & 第１引数                  \\ \hline
          & +04     & \$a1         & primes\_auto{[}0{]}の値 \\ \hline
   \end{tabular}
-  \caption{スタックの様子}
   \end{table}
 
 \subsection{アセンブリにおけるstatic変数}
@@ -527,6 +538,7 @@ C言語においてstaticという言葉は，2つの意味を持っていた．
 
 staticは，関数内でも有効に働くので，その場合は変数の有効範囲ではなく，記憶クラスを指定する．以下にその宣言と解釈した内容を表に示す．
 \begin{table}[htb]
+  \caption{staticとint}
   \label{tab:table1}
   \centering
   \begin{tabular}{|l|l|l|l|}
@@ -537,7 +549,6 @@ staticは，関数内でも有効に働くので，その場合は変数の有�
   int a;（関数内）        & 関数内        & 自動（関数中）    \\ \hline
   int a;（関数外）        & プログラム全体    & 静的（プログラム中） \\ \hline
   \end{tabular}
-  \caption{staticとint}
   \end{table}
 %TODO:\subsection{autoとstaticのテスト}
 %同じ名前の変数が用意された異なるファイルを2つ読み込むとどうなるのかについて調べてみる。

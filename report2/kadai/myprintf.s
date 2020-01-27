@@ -320,7 +320,7 @@ $L34:
 	.rdata
 	.align	2
 $LC2:
-	.asciiz	"'-+ #0"
+	.asciiz	"'-+#0"
 	.align	2
 $LC3:
 	.asciiz	"(null)"
@@ -368,23 +368,20 @@ $L41:
 $L43:
 	lw	$v0,72($fp)
 	lb	$v0,0($v0)
-	addu	$v0,$v0,-32
+	addu	$v0,$v0,-35
 	sw	$v0,52($fp)
 	lw	$v1,52($fp)
-	sltu	$v0,$v1,17
+	sltu	$v0,$v1,14
 	beq	$v0,$zero,$L44
 	lw	$v0,52($fp)
 	sll	$v1,$v0,2
-	la	$v0,$L51
+	la	$v0,$L50
 	addu	$v0,$v1,$v0
 	lw	$v0,0($v0)
 	j	$v0
 	.rdata
 	.align	3
-$L51:
-	.word	$L50
-	.word	$L44
-	.word	$L44
+$L50:
 	.word	$L48
 	.word	$L44
 	.word	$L44
@@ -426,13 +423,6 @@ $L49:
 	lw	$v0,28($fp)
 	ori	$v0,$v0,0x2
 	sw	$v0,28($fp)
-	j	$L44
-$L50:
-	lw	$v0,28($fp)
-	ori	$v0,$v0,0x20
-	sw	$v0,28($fp)
-	li	$v0,32			# 0x20
-	sb	$v0,44($fp)
 $L44:
 	lw	$v0,72($fp)
 	addu	$v0,$v0,1
@@ -442,17 +432,17 @@ $L42:
 	.set	noreorder
 	nop
 	.set	reorder
-$L53:
+$L52:
 	lw	$v0,72($fp)
 	lb	$v0,0($v0)
 	slt	$v0,$v0,48
-	bne	$v0,$zero,$L54
+	bne	$v0,$zero,$L53
 	lw	$v0,72($fp)
 	lb	$v0,0($v0)
 	slt	$v0,$v0,58
-	bne	$v0,$zero,$L55
-	j	$L54
-$L55:
+	bne	$v0,$zero,$L54
+	j	$L53
+$L54:
 	lw	$v1,32($fp)
 	move	$v0,$v1
 	sll	$v0,$v0,2
@@ -465,38 +455,26 @@ $L55:
 	sw	$v0,32($fp)
 	addu	$v1,$v1,1
 	sw	$v1,72($fp)
-	j	$L53
-$L54:
+	j	$L52
+$L53:
 	lw	$v0,72($fp)
 	lb	$v1,0($v0)
 	li	$v0,46			# 0x2e
-	bne	$v1,$v0,$L57
+	bne	$v1,$v0,$L56
 	lw	$v0,72($fp)
 	addu	$v0,$v0,1
 	sw	$v0,72($fp)
-	lw	$v0,72($fp)
-	lb	$v1,0($v0)
-	li	$v0,42			# 0x2a
-	bne	$v1,$v0,$L58
-	lw	$v0,72($fp)
-	addu	$v0,$v0,1
-	sw	$v0,72($fp)
-	lw	$v0,24($fp)
-	lw	$v0,0($v0)
-	sw	$v0,36($fp)
-	j	$L57
-$L58:
-$L60:
+$L57:
 	lw	$v0,72($fp)
 	lb	$v0,0($v0)
 	slt	$v0,$v0,48
-	bne	$v0,$zero,$L57
+	bne	$v0,$zero,$L56
 	lw	$v0,72($fp)
 	lb	$v0,0($v0)
 	slt	$v0,$v0,58
-	bne	$v0,$zero,$L62
-	j	$L57
-$L62:
+	bne	$v0,$zero,$L59
+	j	$L56
+$L59:
 	lw	$v1,36($fp)
 	move	$v0,$v1
 	sll	$v0,$v0,2
@@ -509,55 +487,55 @@ $L62:
 	sw	$v0,36($fp)
 	addu	$v1,$v1,1
 	sw	$v1,72($fp)
-	j	$L60
-$L57:
+	j	$L57
+$L56:
 	lw	$v0,72($fp)
 	lb	$v0,0($v0)
 	sw	$v0,56($fp)
 	li	$v0,105			# 0x69
 	lw	$v1,56($fp)
-	beq	$v1,$v0,$L66
+	beq	$v1,$v0,$L63
 	lw	$v1,56($fp)
 	slt	$v0,$v1,106
-	beq	$v0,$zero,$L88
+	beq	$v0,$zero,$L85
 	li	$v0,99			# 0x63
 	lw	$v1,56($fp)
-	beq	$v1,$v0,$L81
+	beq	$v1,$v0,$L78
 	lw	$v1,56($fp)
 	slt	$v0,$v1,100
-	beq	$v0,$zero,$L89
+	beq	$v0,$zero,$L86
 	li	$v0,37			# 0x25
 	lw	$v1,56($fp)
-	beq	$v1,$v0,$L82
+	beq	$v1,$v0,$L79
 	li	$v0,88			# 0x58
 	lw	$v1,56($fp)
-	beq	$v1,$v0,$L83
-	j	$L91
-$L89:
+	beq	$v1,$v0,$L80
+	j	$L88
+$L86:
 	li	$v0,100			# 0x64
 	lw	$v1,56($fp)
-	beq	$v1,$v0,$L66
-	j	$L91
-$L88:
+	beq	$v1,$v0,$L63
+	j	$L88
+$L85:
 	li	$v0,115			# 0x73
 	lw	$v1,56($fp)
-	beq	$v1,$v0,$L68
+	beq	$v1,$v0,$L65
 	lw	$v1,56($fp)
 	slt	$v0,$v1,116
-	beq	$v0,$zero,$L90
+	beq	$v0,$zero,$L87
 	li	$v0,111			# 0x6f
 	lw	$v1,56($fp)
-	beq	$v1,$v0,$L85
-	j	$L91
-$L90:
+	beq	$v1,$v0,$L82
+	j	$L88
+$L87:
 	li	$v0,120			# 0x78
 	lw	$v1,56($fp)
-	beq	$v1,$v0,$L84
-	j	$L91
-$L66:
+	beq	$v1,$v0,$L81
+	j	$L88
+$L63:
 	lw	$v0,24($fp)
 	lw	$v0,0($v0)
-	bgez	$v0,$L67
+	bgez	$v0,$L64
 	lw	$v1,24($fp)
 	lw	$v0,24($fp)
 	lw	$v0,0($v0)
@@ -565,7 +543,7 @@ $L66:
 	sw	$v0,0($v1)
 	li	$v0,45			# 0x2d
 	sb	$v0,44($fp)
-$L67:
+$L64:
 	lw	$v1,24($fp)
 	lb	$a3,44($fp)
 	lw	$v0,28($fp)
@@ -577,85 +555,85 @@ $L67:
 	lw	$v0,24($fp)
 	addu	$v0,$v0,4
 	sw	$v0,24($fp)
-	j	$L91
-$L68:
+	j	$L88
+$L65:
 	lw	$v0,24($fp)
 	lw	$v0,0($v0)
 	sw	$v0,48($fp)
 	lw	$v0,48($fp)
-	bne	$v0,$zero,$L69
+	bne	$v0,$zero,$L66
 	la	$v0,$LC3
 	sw	$v0,48($fp)
-$L69:
+$L66:
 	lw	$a0,48($fp)
 	jal	_my_strlen
 	sw	$v0,40($fp)
 	lw	$v0,36($fp)
-	beq	$v0,$zero,$L70
+	beq	$v0,$zero,$L67
 	lw	$v0,36($fp)
 	lw	$v1,40($fp)
 	slt	$v0,$v0,$v1
-	beq	$v0,$zero,$L70
+	beq	$v0,$zero,$L67
 	lw	$v0,36($fp)
 	sw	$v0,40($fp)
-$L70:
+$L67:
 	lw	$v1,32($fp)
 	lw	$v0,40($fp)
 	subu	$v0,$v1,$v0
 	sw	$v0,32($fp)
 	lw	$v0,28($fp)
 	andi	$v0,$v0,0x40
-	bne	$v0,$zero,$L71
-$L72:
+	bne	$v0,$zero,$L68
+$L69:
 	lw	$v0,32($fp)
-	bgtz	$v0,$L74
-	j	$L71
-$L74:
+	bgtz	$v0,$L71
+	j	$L68
+$L71:
 	lw	$v0,32($fp)
 	addu	$v0,$v0,-1
 	sw	$v0,32($fp)
 	li	$a0,32			# 0x20
 	jal	_print_char
-	j	$L72
-$L71:
+	j	$L69
+$L68:
 	.set	noreorder
 	nop
 	.set	reorder
-$L75:
+$L72:
 	lw	$v0,40($fp)
 	addu	$v0,$v0,-1
 	move	$v1,$v0
 	sw	$v1,40($fp)
 	li	$v0,-1			# 0xffffffff
-	bne	$v1,$v0,$L77
-	j	$L76
-$L77:
+	bne	$v1,$v0,$L74
+	j	$L73
+$L74:
 	addu	$v0,$fp,48
 	lw	$v1,0($v0)
 	lb	$a0,0($v1)
 	addu	$v1,$v1,1
 	sw	$v1,0($v0)
 	jal	_print_char
-	j	$L75
-$L76:
+	j	$L72
+$L73:
 	.set	noreorder
 	nop
 	.set	reorder
-$L78:
+$L75:
 	lw	$v0,32($fp)
-	bgtz	$v0,$L80
+	bgtz	$v0,$L77
 	lw	$v0,24($fp)
 	addu	$v0,$v0,4
 	sw	$v0,24($fp)
-	j	$L91
-$L80:
+	j	$L88
+$L77:
 	lw	$v0,32($fp)
 	addu	$v0,$v0,-1
 	sw	$v0,32($fp)
 	li	$a0,32			# 0x20
 	jal	_print_char
-	j	$L78
-$L81:
+	j	$L75
+$L78:
 	lw	$v0,24($fp)
 	lb	$v0,0($v0)
 	move	$a0,$v0
@@ -663,16 +641,16 @@ $L81:
 	lw	$v0,24($fp)
 	addu	$v0,$v0,4
 	sw	$v0,24($fp)
-	j	$L91
-$L82:
+	j	$L88
+$L79:
 	li	$a0,37			# 0x25
 	jal	_print_char
-	j	$L91
-$L83:
+	j	$L88
+$L80:
 	lw	$v0,28($fp)
 	ori	$v0,$v0,0x10
 	sw	$v0,28($fp)
-$L84:
+$L81:
 	lw	$v1,24($fp)
 	lb	$a3,44($fp)
 	lw	$v0,28($fp)
@@ -684,8 +662,8 @@ $L84:
 	lw	$v0,24($fp)
 	addu	$v0,$v0,4
 	sw	$v0,24($fp)
-	j	$L91
-$L85:
+	j	$L88
+$L82:
 	lw	$v1,24($fp)
 	lb	$a3,44($fp)
 	lw	$v0,28($fp)
@@ -697,13 +675,13 @@ $L85:
 	lw	$v0,24($fp)
 	addu	$v0,$v0,4
 	sw	$v0,24($fp)
-	j	$L91
+	j	$L88
 $L40:
 	lw	$v0,72($fp)
 	lb	$v0,0($v0)
 	move	$a0,$v0
 	jal	_print_char
-$L91:
+$L88:
 	lw	$v0,72($fp)
 	addu	$v0,$v0,1
 	sw	$v0,72($fp)
@@ -720,27 +698,36 @@ $LC4:
 	.asciiz	"TEST\n"
 	.align	2
 $LC5:
-	.ascii	"%%d:%d\n"
-	.ascii	"%%5d:%5d\n"
-	.asciiz	"%%-5d:%-5d\n"
+	.ascii	"%%d   :%d\n"
+	.ascii	"%%5d  :%5d\n"
+	.asciiz	"%%-5d :%-5d\n"
 	.align	2
 $LC6:
-	.ascii	"%%x:%x\n"
-	.asciiz	"%%X:%X\n"
+	.asciiz	"%%5.2d:%5.2d\n"
 	.align	2
 $LC7:
-	.asciiz	"%%o:%o\n"
+	.ascii	"%%#x  :%#x\n"
+	.asciiz	"%%X   :%X\n"
 	.align	2
 $LC8:
-	.ascii	"%%s:%s\n"
-	.ascii	"%%5s:%5s\n"
-	.asciiz	"%%5.2s:%5.2s\n"
+	.asciiz	"%%#o  :%#o\n"
 	.align	2
 $LC9:
-	.asciiz	"Say"
+	.ascii	"%%s   :%s\n"
+	.ascii	"%%5s  :%5s\n"
+	.asciiz	"%%5.2s:%5.2s\n"
 	.align	2
 $LC10:
-	.asciiz	"%%c:%c\n"
+	.asciiz	"Say"
+	.align	2
+$LC11:
+	.asciiz	"%%c   :%c\n"
+	.align	2
+$LC12:
+	.asciiz	"%%'d  :%'d\n"
+	.align	2
+$LC13:
+	.asciiz	"%%05d :%05d\n"
 	.text
 	.align	2
 main:
@@ -756,19 +743,30 @@ main:
 	li	$a3,100			# 0x64
 	jal	_myprintf
 	la	$a0,$LC6
-	li	$a1,15			# 0xf
-	li	$a2,15			# 0xf
+	li	$a1,100			# 0x64
+	li	$a2,100			# 0x64
+	li	$a3,100			# 0x64
 	jal	_myprintf
 	la	$a0,$LC7
 	li	$a1,15			# 0xf
+	li	$a2,15			# 0xf
 	jal	_myprintf
 	la	$a0,$LC8
-	la	$a1,$LC9
-	la	$a2,$LC9
-	la	$a3,$LC9
+	li	$a1,15			# 0xf
 	jal	_myprintf
-	la	$a0,$LC10
+	la	$a0,$LC9
+	la	$a1,$LC10
+	la	$a2,$LC10
+	la	$a3,$LC10
+	jal	_myprintf
+	la	$a0,$LC11
 	li	$a1,97			# 0x61
+	jal	_myprintf
+	la	$a0,$LC12
+	li	$a1,10000			# 0x2710
+	jal	_myprintf
+	la	$a0,$LC13
+	li	$a1,100			# 0x64
 	jal	_myprintf
 	move	$v0,$zero
 	move	$sp,$fp
